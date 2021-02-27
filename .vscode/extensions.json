@@ -5,6 +5,8 @@
     "bierner.markdown-emoji",
     "esbenp.prettier-vscode",
     "shd101wyy.markdown-preview-enhanced",
-    "visualstudioexptteam.vscodeintellicode"
+    "visualstudioexptteam.vscodeintellicode",
+    "mariusschulz.yarn-lock-syntax",
+    "streetsidesoftware.code-spell-checker"
   ]
 }
