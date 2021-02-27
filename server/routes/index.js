@@ -10,7 +10,7 @@ router.get('/', function (req, res) {
   // Want to return ascii text for curl requests and html for the browser
   if (req.headers['user-agent'].includes('curl')) {
     // TODO make team dynamic, 2 is for the celtics
-    const teamID = 2;
+    // const teamID = 2;
     // TODO get next three teams given an id
 
     //
@@ -133,7 +133,7 @@ router.get('/', function (req, res) {
     };
 
     nextThreeBBall = mockGames.data.slice(0, 3);
-    res.json(threeGames);
+    res.json(nextThreeBBall);
   } else {
     res.render('index', { title: 'the end' });
   }
