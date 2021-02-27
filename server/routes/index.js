@@ -1,37 +1,39 @@
 import express from 'express';
-// import { default as axios } from 'axios';
+import { default as axios } from 'axios';
+import { emojify } from 'node-emoji';
+import { table } from 'table';
 
 var router = express.Router();
 
+const getBBall = (teamId) => {
+  return axios.request({
+    method: 'GET',
+    url: 'https://www.balldontlie.io/api/v1/games',
+    params: {
+      'team_ids[]': teamId,
+      start_date: new Date().toISOString()
+    }
+  });
+};
+
+const formatGame = (game) => {
+  return [
+    `${game.home_team.abbreviation} vs ${game.visitor_team.abbreviation}`,
+    new Date(game.date).toLocaleDateString() + ' ' + game.status
+  ].join('\n');
+};
+
 /* GET home page. */
-router.get('/', function (req, res) {
+router.get('/', async function (req, res) {
   // Testing for presence of curl in user agent
   // goal of this is to test if the request is coming from a terminal vs a browser
   // Want to return ascii text for curl requests and html for the browser
   if (req.headers['user-agent'].includes('curl')) {
     // TODO make team dynamic, 2 is for the celtics
-    // const teamID = 2;
-    // TODO get next three teams given an id
+    const teamId = 2;
 
-    //
-    let nextThreeBBall = {};
-    /*
-    axios
-      .request({
-        method: 'GET',
-        url: 'https://www.balldontlie.io/api/v1/games',
-        params: {
-          'team_ids[]': teamID,
-          start_date: new Date().toISOString()
-        }
-      })
-      .then(function (response) {
-        nextThreeBBall = response.data.slice(0, 3);
-      })
-      .catch(function (error) {
-        console.error(error);
-      });
-      */
+    // let nextThreeBBall = await getBBall(teamId);
+    let nextThreeBBall;
     // saved response by this last api call
     const mockGames = {
       data: [
@@ -132,8 +134,14 @@ router.get('/', function (req, res) {
       }
     };
 
+    // nextThreeBBall = nextThreeBBall.data.data.slice(0, 3);
     nextThreeBBall = mockGames.data.slice(0, 3);
-    res.json(nextThreeBBall);
+
+    const gamesTable = table([
+      [emojify(`:basketball: Basketball`), ...nextThreeBBall.map(formatGame)]
+    ]);
+
+    res.send(gamesTable);
   } else {
     res.render('index', { title: 'the end' });
   }
