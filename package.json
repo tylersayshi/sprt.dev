@@ -38,7 +38,8 @@
     "eslint-plugin-jest": "^24.1.5",
     "husky": "4",
     "jest": "^26.6.3",
-    "prettier": "^2.2.1"
+    "prettier": "^2.2.1",
+    "pretty-quick": "^3.1.0"
   },
   "nodemonConfig": {
     "exec": "npm run dev",
@@ -62,7 +63,7 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": "yarn lint && yarn pretty"
+      "pre-commit": "yarn lint && pretty-quick --staged"
     }
   }
 }
