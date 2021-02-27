@@ -1,4 +1,4 @@
-# sprt.dev
+# sprt.dev :basketball: :baseball: :ice_hockey: :football:
 
 ## Dev Setup Instructions
 
