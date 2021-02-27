@@ -1,7 +1,6 @@
 {
   "name": "sprt.dev",
   "version": "0.0.1",
-  "private": false,
   "license": "MIT",
   "engineStrict": true,
   "engines": {
