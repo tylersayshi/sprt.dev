@@ -1,8 +1,11 @@
 body {
-  padding: 50px;
-  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+  background: #000;
+  color: #bbb;
 }
 
-a {
-  color: #00B7FF;
+pre {
+  font-family: 'Source Code Pro', 'DejaVu Sans Mono', Menlo,
+    'Lucida Sans Typewriter', 'Lucida Console', monaco,
+    'Bitstream Vera Sans Mono', monospace;
+  font-size: 14px;
 }
