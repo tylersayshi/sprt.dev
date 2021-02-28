@@ -3,6 +3,9 @@ import { table } from 'table';
 import Convert from 'ansi-to-html';
 import { getBasketball } from '../sports/basketball';
 import { capitalizeFirst } from './helpers';
+import { getHockey } from '../sports/hockey';
+// import { getFootball } from '../sports/football';
+// import { getBaseball } from '../sports/baseball';
 
 // lookup table to hold emoji for each sport
 const emojiMap = {
@@ -26,14 +29,31 @@ const formatGame = (game) => {
 
 var router = express.Router();
 router.get('/', async function (req, res) {
+  //TODO dynamically get location
+  const teamName = 'bos';
   // load three from mock
-  let nextThreeBBall = await getBasketball();
+  const basketballGames = await getBasketball(teamName);
+  const hockeyGames = await getHockey(teamName);
+  // const footballGames = await getFootball(teamName);
+  // const baseballGames = await getBaseball(teamName);
 
   const dataForTable = [
     {
       name: 'basketball',
-      games: nextThreeBBall
+      games: basketballGames
+    },
+    {
+      name: 'hockey',
+      games: hockeyGames
     }
+    // {
+    //   name: 'baseball',
+    //   games: baseballGames
+    // }
+    // {
+    //   name: 'football',
+    //   games: footballGames
+    // }
   ];
 
   const gamesTable = table(
