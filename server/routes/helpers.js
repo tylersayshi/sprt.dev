@@ -26,3 +26,8 @@
  * @param {string} str
  */
 export const removeLeadingZero = (str) => (str[0] === '0' ? str[1] : str);
+
+export const capitalizeFirst = (str) => {
+  const split = str.split('');
+  return split[0].toUpperCase() + split.slice(1).join('');
+};

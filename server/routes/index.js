@@ -2,6 +2,7 @@ import express from 'express';
 import { table } from 'table';
 import Convert from 'ansi-to-html';
 import { getBasketball } from '../sports/basketball';
+import { capitalizeFirst } from './helpers';
 
 // lookup table to hold emoji for each sport
 const emojiMap = {
@@ -16,13 +17,17 @@ const emojiMap = {
  * @param {Game} game - game to format as a string
  */
 const formatGame = (game) => {
-  return [`${game.home.abbr} vs ${game.away.abbr}`, game.datetime].join('\n');
+  let cell = [game.title, game.datetime];
+  // if (game.home.score || game.away.score)
+  //   cell.push(`${game.home.score}-${game.away.score}`);
+  // cell.push(`Network: ${game.network}`);
+  return cell.join('\n');
 };
 
 var router = express.Router();
 router.get('/', async function (req, res) {
   // load three from mock
-  let nextThreeBBall = getBasketball();
+  let nextThreeBBall = await getBasketball();
 
   const dataForTable = [
     {
@@ -33,7 +38,7 @@ router.get('/', async function (req, res) {
 
   const gamesTable = table(
     dataForTable.map((sport) => [
-      `${emojiMap[sport.name]} ${sport.name}`,
+      `${emojiMap[sport.name]} ${capitalizeFirst(sport.name)}`,
       ...sport.games.map(formatGame)
     ])
   );
@@ -46,7 +51,7 @@ router.get('/', async function (req, res) {
   } else {
     const convert = new Convert();
     const htmlTable = convert.toHtml(gamesTable);
-    res.render('index', { table: htmlTable });
+    res.render('index', { table: htmlTable, location: 'Boston' });
   }
 });
 
