@@ -27,10 +27,14 @@ export const getESPN = async (url, teamName) => {
     const title = `${teamName.toUpperCase()} ${vsOrAt} ${opponentCode}`;
 
     const date = row.childNodes[0].textContent.trim();
+
+    // TODO check for live
     const time = [...row.querySelectorAll('td a')]
       .find((row) => row.textContent.match(/([AaPp][Mm])/))
       .textContent.trim();
-    const datetime = `${date} ${time}`;
+
+    // handle live differently
+    const datetime = `${date} @ ${time}`;
 
     return {
       datetime,
