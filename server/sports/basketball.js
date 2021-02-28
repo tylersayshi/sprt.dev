@@ -1,6 +1,6 @@
 // import axios from 'axios';
 import { mockBBall } from '../mock';
-import { removeLeadingZero } from './tools';
+import { removeLeadingZero } from '../routes/helpers';
 
 /**
  * helper to normalize data from balldontlie api

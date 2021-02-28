@@ -1,7 +1,7 @@
 import express from 'express';
 import { table } from 'table';
 import Convert from 'ansi-to-html';
-import { getBasketball } from '../utils/basketball';
+import { getBasketball } from '../sports/basketball';
 
 // lookup table to hold emoji for each sport
 const emojiMap = {
