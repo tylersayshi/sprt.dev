@@ -2,8 +2,5 @@
   "emojisense.unicodeCompletionsEnabled": false,
   "editor.defaultFormatter": "esbenp.prettier-vscode",
   "editor.formatOnSave": true,
-  "cSpell.words": [
-    "emojify",
-    "sprt"
-  ]
+  "cSpell.words": ["bball", "emojify", "response", "sprt"]
 }
