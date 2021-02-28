@@ -16,10 +16,17 @@ const getBBall = (teamId) => {
   });
 };
 
+const removeLeadingZero = (str) => (str[0] === '0' ? str[1] : str);
+
 const formatGame = (game) => {
+  // parsed iso string
+  const [date] = game.date.split('T');
+  const [year, month, day] = date.split('-').map(removeLeadingZero);
+  const gameDateString = `${month}/${day}/${year} ${game.status}`;
+
   return [
     `${game.home_team.abbreviation} vs ${game.visitor_team.abbreviation}`,
-    new Date(game.date).toLocaleDateString() + ' ' + game.status
+    gameDateString
   ].join('\n');
 };
 
