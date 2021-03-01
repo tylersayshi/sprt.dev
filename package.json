@@ -7,13 +7,12 @@
     "yarn": ">=1.22.10"
   },
   "scripts": {
-    "start": "server",
-    "dev": "NODE_ENV=development npm-run-all build server",
+    "start": "node ./dist/bin/www",
+    "dev": "NODE_ENV=development npm-run-all build start",
     "start:dev": "nodemon",
     "pretty": "prettier --write {server,public}/**/**.js",
     "lint": "eslint '{public,server}/**/*.js'",
     "build": "npm-run-all clean transpile",
-    "server": "node ./dist/bin/www",
     "transpile": "babel ./server --out-dir dist",
     "clean": "rimraf dist",
     "test": "jest",
