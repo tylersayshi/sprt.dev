@@ -27,10 +27,13 @@ router.get('/', async function (req, res) {
   //TODO dynamically get location
   const teamName = 'bos';
   // load three from mock
-  const basketballGames = await getESPN('basketball', teamName);
-  const hockeyGames = await getESPN('hockey', teamName);
-  // const footballGames = await getFootball(teamName);
-  // const baseballGames = await getBaseball(teamName);
+  const basketballPromise = getESPN('basketball', teamName);
+  const hockeyPromise = getESPN('hockey', teamName);
+  // TODO error check (use allSettled)
+  const [basketballGames, hockeyGames] = await Promise.all([
+    basketballPromise,
+    hockeyPromise
+  ]);
 
   // TODO add empty cells when one sport in season gets close to end
 
