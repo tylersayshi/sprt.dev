@@ -2,14 +2,14 @@
 
 name: CI
 
-# Controls when the action will run. 
+# Controls when the action will run.
 on:
   push:
-    branches: [ master ]
+    branches: [master]
   pull_request:
-    branches: [ master ]
+    branches: [master]
   workflow_dispatch:
-    branches: [ master ]
+    branches: [master]
 
 jobs:
   # This workflow contains a single job called "build"
@@ -21,34 +21,23 @@ jobs:
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
-      
+
       - name: Setup Node.js environment
         uses: actions/setup-node@v2.1.5
         with:
           node-version: '>=14.15.3'
-          
+
       - name: install deps
         uses: borales/actions-yarn@v2.3.0
         with:
           cmd: install
-          
+
       - name: build
         uses: borales/actions-yarn@v2.3.0
         with:
           cmd: build
-          
+
       - name: test
         uses: borales/actions-yarn@v2.3.0
         with:
           cmd: test
-          
-      - name: GitHub Branch Deploy
-        uses: zekth/gh-deploy-action@1.0.0
-        with:
-          build_dir: dist
-          # Personnal access token
-          gh_token: ${{ secrets.TOKEN }}
-          # Branch targeted for the deployment
-          target_branch: production
-          
-      
