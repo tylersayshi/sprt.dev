@@ -65,7 +65,7 @@ export const getESPN = async (sport, teamName) => {
     if (time.toLowerCase() === 'live') {
       network = `Live on ${network}`;
     } else {
-      datetime = `${date}, ${time}`;
+      datetime = `${date} @ ${time}`;
     }
 
     return {
