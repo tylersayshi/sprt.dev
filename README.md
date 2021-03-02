@@ -5,5 +5,5 @@
 ```
 npm i -g yarn # if you do not already have yarn
 yarn install
-yarn start # see package.json for other scripts
+yarn dev # see package.json for other scripts
 ```
