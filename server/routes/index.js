@@ -29,13 +29,17 @@ router.get('/', async function (req, res) {
   // load three from mock
   const basketballPromise = getESPN('basketball', teamName);
   const hockeyPromise = getESPN('hockey', teamName);
+  const baseballPromise = getESPN('baseball', teamName);
+
   // TODO error check (use allSettled)
-  const [basketballGames, hockeyGames] = await Promise.all([
+  const [basketballGames, hockeyGames, baseballGames] = await Promise.all([
     basketballPromise,
-    hockeyPromise
+    hockeyPromise,
+    baseballPromise
   ]);
 
   // TODO add empty cells when one sport in season gets close to end
+  // TODO check what sports are in season
 
   const dataForTable = [
     {
@@ -45,11 +49,11 @@ router.get('/', async function (req, res) {
     {
       name: 'hockey',
       games: hockeyGames
+    },
+    {
+      name: 'baseball',
+      games: baseballGames
     }
-    // {
-    //   name: 'baseball',
-    //   games: baseballGames
-    // }
     // {
     //   name: 'football',
     //   games: footballGames
