@@ -21,7 +21,6 @@ router.get('/', async function (req, res) {
   const baseballPromise = getESPN('baseball', city.sports.baseball);
   const footballPromise = getESPN('football', city.sports.football);
 
-  // TODO error check (use allSettled)
   const [
     basketballGames,
     hockeyGames,
@@ -33,9 +32,6 @@ router.get('/', async function (req, res) {
     baseballPromise,
     footballPromise
   ]);
-
-  // TODO add empty cells when one sport in season gets close to end
-  // TODO check what sports are in season
 
   const dataForTable = [
     {
