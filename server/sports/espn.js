@@ -17,12 +17,11 @@ export const getESPN = async (sport, teamName) => {
 
     const events = espnResp.data.events;
 
-    const minutes = 1000 * 60;
-    const hours = minutes * 60;
-
     const startIndex = events.findIndex(
       event =>
-        new Date(event.date).getTime() >= new Date().getTime() - 12 * hours
+        !['STATUS_FINAL', 'STATUS_POSTPONED'].includes(
+          event.competitions[0].status.type.name
+        )
     );
 
     const gameRows = [...events].slice(startIndex, startIndex + 3);
