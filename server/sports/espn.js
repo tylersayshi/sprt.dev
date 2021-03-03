@@ -40,8 +40,6 @@ export const getESPN = async (sport, teamName) => {
       );
       if (nationalIndex !== -1) {
         broadcast = tvGames[nationalIndex].media.shortName;
-      } else if (tvGames.length) {
-        broadcast = tvGames.map(game => game.media.shortName).join(' or ');
       } else {
         broadcast = 'Local Network';
       }
