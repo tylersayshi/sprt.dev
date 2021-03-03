@@ -52,6 +52,6 @@ export const getESPN = async (sport, teamName) => {
     return parsedRows;
   } catch (error) {
     console.log(`Error getting data for ${sport}`, error);
-    return [1, 2, 3].map(() => ' '); // TODO hide row if errors
+    return;
   }
 };
