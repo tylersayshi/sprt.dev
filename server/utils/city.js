@@ -1,11 +1,8 @@
 import axios from 'axios';
 
 export const getCity = async req => {
-  let ip;
-  // use express ip in production
-  if (process.env.NODE_ENV === 'production') {
-    ip = req.ip;
-  } else {
+  let ip = req.ip;
+  if (ip.includes('127.0.0.1')) {
     // lookup local public ip in development since express says localhost
     const { data } = await axios.get('http://bot.whatismyipaddress.com');
     ip = data;
