@@ -1,8 +1,13 @@
 node_modules
 
+# build folder
 dist
-build
 
+# environment variables
 env.json
 
+# yarn error logs
 *.log
+
+# temporary json files for testing
+tmp
