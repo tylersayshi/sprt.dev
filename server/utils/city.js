@@ -24,7 +24,7 @@ export const getCity = async req => {
   return {
     name:
       (geo.city
-        ? [geo.city, geo.region_name, geo.country_name].join(', ')
+        ? [geo.city, geo.region_name, geo.country_name].join(', ') + ' '
         : '') + '(Schedule hardcoded to Boston for now)',
     sports: {
       baseball: 'bos',
