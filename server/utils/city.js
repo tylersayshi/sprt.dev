@@ -1,27 +1,13 @@
 import axios from 'axios';
 
 export const getCity = async req => {
-  var testIp = req.ip; // trust proxy sets ip to the remote client (not to the ip of the last reverse proxy server)
-  if (testIp.substr(0, 7) == '::ffff:') {
-    // fix for if you have both ipv4 and ipv6
-    testIp = testIp.substr(7);
-  }
-
-  console.log({
-    ip: testIp,
-    protocol: req.protocol,
-    headers: req.headers['x-forwarded-for']
-  });
-
-  // TODO https://stackoverflow.com/questions/23413401/what-does-trust-proxy-actually-do-in-express-js-and-do-i-need-to-use-it
   // remove ipv4 prefix
-  let ip = req.ip.replace('::ffff:', '');
+  let ip = req.headers['x-forwarded-for'] || req.ip.replace('::ffff:', '');
   if (ip.includes('127.0.0.1')) {
     // lookup local public ip in development since express says localhost
     const { data } = await axios.get('http://bot.whatismyipaddress.com');
     ip = data;
   }
-  console.log('IP ADDRESS:', ip);
   const geoResponse = await axios
     .get('https://tools.keycdn.com/geo.json?host=' + ip, {
       headers: { 'user-agent': 'keycdn-tools:https://www.sprt.dev' }
