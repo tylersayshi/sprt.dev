@@ -11,17 +11,6 @@ const emojiMap = {
   football: '🏈'
 };
 
-/**
- * helper function to format a game object for the table cells
- * @param {Game} game - game to format as a string
- */
-const formatGame = (game) => {
-  let cell = [game.title];
-  if (game.datetime) cell.push(game.datetime);
-  cell.push(game.network);
-  return cell.join('\n');
-};
-
 var router = express.Router();
 router.get('/', async function (req, res) {
   //TODO dynamically get location
@@ -60,9 +49,9 @@ router.get('/', async function (req, res) {
     // }
   ];
 
-  const parsedDataForTable = dataForTable.map((sport) => [
+  const parsedDataForTable = dataForTable.map(sport => [
     `${emojiMap[sport.name]} ${capitalizeFirst(sport.name)}`,
-    ...sport.games.map(formatGame)
+    ...sport.games
   ]);
 
   const gamesTable = table(parsedDataForTable);

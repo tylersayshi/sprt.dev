@@ -1,5 +1,4 @@
 import axios from 'axios';
-import { JSDOM } from 'jsdom';
 
 const sportMap = {
   basketball: 'nba',
@@ -9,70 +8,50 @@ const sportMap = {
 };
 
 // helper to get espn url given a team code
-const scheduleURL = (league, team) =>
-  `https://www.espn.com/${league}/team/schedule/_/name/${team}`;
+const scheduleURL = (sport, team) =>
+  `https://site.api.espn.com/apis/site/v2/sports/${sport}/${sportMap[sport]}/teams/${team}/schedule`;
 
 export const getESPN = async (sport, teamName) => {
-  const espnResp = await axios.get(scheduleURL(sportMap[sport], teamName));
+  try {
+    const espnResp = await axios.get(scheduleURL(sport, teamName));
 
-  const dom = new JSDOM(espnResp.data);
+    const events = espnResp.data.events;
 
-  dom.window.addEventListener('loadeddata', () => {
-    const score = dom.window.document.body.querySelector('.ScoreCell__Link');
-    console.log(score.innerHTML);
-  });
+    const minutes = 1000 * 60;
+    const hours = minutes * 60;
 
-  const table = dom.window.document.body.querySelector('table');
-  const tableRows = table.querySelectorAll('tr');
-  const currDateBar = table.querySelector(
-    'tr[data-idx]:not([data-idx="0"]) .small-col'
-  );
-  const startIndex = parseInt(currDateBar.parentElement.dataset.idx);
+    const startIndex = events.findIndex(
+      event =>
+        new Date(event.date).getTime() >= new Date().getTime() - 12 * hours
+    );
 
-  const gameRows = [...tableRows].slice(startIndex + 1, startIndex + 4);
+    const gameRows = [...events].slice(startIndex, startIndex + 3);
 
-  const parsedRows = gameRows.map((row) => {
-    const opponentCell = row.querySelector('.opponent-logo');
-    const opponentParsedLink = opponentCell.querySelector('a').href.split('/');
-    const opponentCode = opponentParsedLink[
-      opponentParsedLink.length - 2
-    ].toUpperCase();
-    const [vsOrAt] = opponentCell.textContent.trim().split(' ');
-    const title = `${teamName.toUpperCase()} ${vsOrAt} ${opponentCode}`;
+    const parsedRows = gameRows.map(game => {
+      const title = game.shortName;
+      const competition = game.competitions[0];
+      const status = competition.status.type.shortDetail;
 
-    const date = row.childNodes[0].textContent.trim();
-    const time = row.childNodes[2].textContent.trim();
-
-    let datetime, network;
-    // handle live differently
-    const networkCell = row.childNodes[3];
-    if (networkCell.textContent !== '') {
-      network = networkCell.textContent;
-    } else {
-      const networkLogo = networkCell.querySelector('.network-container_link');
-      if (networkLogo) {
-        // refer to local network when on ESPN+
-        if (networkLogo.href.includes('plus')) {
-          network = 'Local Network';
-        } else {
-          network = 'ESPN/ABC';
-        }
+      const tvGames = competition.broadcasts.filter(
+        broad => broad.type.shortName.toLowerCase() === 'tv'
+      );
+      let broadcast;
+      const nationalIndex = tvGames.findIndex(
+        tv => tv.market.type.toLowerCase() === 'national'
+      );
+      if (nationalIndex !== -1) {
+        broadcast = tvGames[nationalIndex].media.shortName;
+      } else if (tvGames.length) {
+        broadcast = tvGames.map(game => game.media.shortName).join(' or ');
       } else {
-        network = 'Local Network';
+        broadcast = 'Local Network';
       }
-    }
 
-    if (time.toLowerCase() === 'live') {
-      network = `Live on ${network}`;
-    } else {
-      datetime = `${date} @ ${time}`;
-    }
-
-    return {
-      datetime,
-      title,
-      network
-    };
-  });
-  return parsedRows;
+      return [title, status, broadcast].join('\n');
+    });
+    return parsedRows;
+  } catch (error) {
+    console.log(`Error getting data for ${sport}`, error);
+    return [1, 2, 3].map(() => ' '); // TODO hide row if errors
+  }
 };
