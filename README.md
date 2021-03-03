@@ -6,7 +6,7 @@ This project aims to provide you with the upcoming games in ~~your location~~ Bo
 
 Just run: `curl www.sprt.dev` or [click here](https://www.sprt.dev).
 
-![docs/img/screenshot.png](curl www.sprt.dev)
+![curl www.sprt.dev](docs/img/screenshot.png)
 
 I will be able to allow for the usage of just `sprt.dev` without the `www` in May when I can transfer the domain off of Google Domains. Unfortunately Google Domains does not allow ANAME records and that is the only way to configure Heroku custom domains without the `www`.
 
