@@ -1,7 +1,8 @@
 import express from 'express';
 import { table } from 'table';
-import { capitalizeFirst } from './helpers';
-import { getESPN } from '../sports/espn';
+import { capitalizeFirst } from '../utils/helpers';
+import { getESPN } from '../utils/espn';
+import { getCity } from '../utils/city';
 
 // lookup table to hold emoji for each sport
 const emojiMap = {
@@ -13,19 +14,24 @@ const emojiMap = {
 
 var router = express.Router();
 router.get('/', async function (req, res) {
-  //TODO dynamically get location
-  const teamName = 'bos';
-  const cityName = 'Boston';
+  const city = getCity();
   // load three from mock
-  const basketballPromise = getESPN('basketball', teamName);
-  const hockeyPromise = getESPN('hockey', teamName);
-  const baseballPromise = getESPN('baseball', teamName);
+  const basketballPromise = getESPN('basketball', city.sports.basketball);
+  const hockeyPromise = getESPN('hockey', city.sports.hockey);
+  const baseballPromise = getESPN('baseball', city.sports.baseball);
+  const footballPromise = getESPN('football', city.sports.football);
 
   // TODO error check (use allSettled)
-  const [basketballGames, hockeyGames, baseballGames] = await Promise.all([
+  const [
+    basketballGames,
+    hockeyGames,
+    baseballGames,
+    footballGames
+  ] = await Promise.all([
     basketballPromise,
     hockeyPromise,
-    baseballPromise
+    baseballPromise,
+    footballPromise
   ]);
 
   // TODO add empty cells when one sport in season gets close to end
@@ -43,11 +49,11 @@ router.get('/', async function (req, res) {
     {
       name: 'baseball',
       games: baseballGames
+    },
+    {
+      name: 'football',
+      games: footballGames
     }
-    // {
-    //   name: 'football',
-    //   games: footballGames
-    // }
   ];
 
   const parsedDataForTable = dataForTable.reduce((acc, sport) => {
@@ -65,7 +71,7 @@ router.get('/', async function (req, res) {
     : 'Error: Could not get any sports for schedule table, try again later.';
 
   const response =
-    `Sport schedule: ${cityName}\n\n` +
+    `Sport schedule: ${city.name}\n\n` +
     gamesTable +
     '\nSee @tylerjlawson/sprt.dev on Github for sprt.dev updates\n';
 
@@ -75,7 +81,7 @@ router.get('/', async function (req, res) {
   if (req.headers['user-agent'].includes('curl')) {
     res.send(response);
   } else {
-    res.render('index', { table: response, location: cityName });
+    res.render('index', { table: response, location: city.name });
   }
 });
 

@@ -24,6 +24,9 @@ export const getESPN = async (sport, teamName) => {
         )
     );
 
+    // when no active games return empty response
+    if (startIndex === -1) return;
+
     const gameRows = [...events].slice(startIndex, startIndex + 3);
 
     const parsedRows = gameRows.map(game => {
