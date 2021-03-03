@@ -13,6 +13,8 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 
+app.set('trust proxy', '127.0.0.1');
+
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 
