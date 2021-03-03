@@ -1,7 +1,8 @@
 import axios from 'axios';
 
 export const getCity = async req => {
-  let ip = req.ip;
+  // remove ipv4 prefix
+  let ip = req.ip.replace('::ffff:', '');
   if (ip.includes('127.0.0.1')) {
     // lookup local public ip in development since express says localhost
     const { data } = await axios.get('http://bot.whatismyipaddress.com');
