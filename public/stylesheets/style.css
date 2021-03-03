@@ -4,8 +4,6 @@ body {
 }
 
 pre {
-  font-family: 'Source Code Pro', 'DejaVu Sans Mono', Menlo,
-    'Lucida Sans Typewriter', 'Lucida Console', monaco,
-    'Bitstream Vera Sans Mono', monospace;
+  font-family: monospace;
   font-size: 14px;
 }
