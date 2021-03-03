@@ -1,6 +1,7 @@
 import axios from 'axios';
 
 export const getCity = async req => {
+  // TODO https://stackoverflow.com/questions/23413401/what-does-trust-proxy-actually-do-in-express-js-and-do-i-need-to-use-it
   // remove ipv4 prefix
   let ip = req.ip.replace('::ffff:', '');
   if (ip.includes('127.0.0.1')) {
@@ -24,8 +25,9 @@ export const getCity = async req => {
 
   return {
     name:
-      [geo.city, geo.region_name, geo.country_name].join(', ') +
-      '(Schedule hardcoded to Boston for now)',
+      (geo.city
+        ? [geo.city, geo.region_name, geo.country_name].join(', ')
+        : '') + '(Schedule hardcoded to Boston for now)',
     sports: {
       baseball: 'bos',
       basketball: 'bos',
