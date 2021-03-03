@@ -21,7 +21,7 @@ export const getCity = async req => {
   // probably keep long name of city, and sport name abbreviation
 
   return {
-    name: `${geo.city}, ${geo.region_name}, ${geo.country_name} (Schedule Hardcoded to Boston for now)`,
+    name: `${geo.city}, ${geo.region_name}, ${geo.country_name} (Schedule hardcoded to Boston for now)`,
     sports: {
       baseball: 'bos',
       basketball: 'bos',
