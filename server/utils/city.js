@@ -1,4 +1,30 @@
 import axios from 'axios';
+import basketball from '../data/basketball.json';
+import football from '../data/football.json';
+import baseball from '../data/baseball.json';
+import hockey from '../data/hockey.json';
+import { distance } from './helpers';
+
+const getClosest = (loc, data) => {
+  const closestTeam = data.reduce(
+    (min, team) => {
+      const d = distance(loc.latitude, loc.longitude, team.lat, team.lon);
+      if (d < min.d) {
+        return {
+          abbr: team.abbr,
+          d
+        };
+      } else {
+        return min;
+      }
+    },
+    {
+      abbr: data[0].abbr,
+      d: Infinity
+    }
+  );
+  return closestTeam.abbr;
+};
 
 export const getCity = async req => {
   // remove ipv4 prefix
@@ -15,11 +41,6 @@ export const getCity = async req => {
     .catch(err => console.log('Error getting geolocation from ip', err));
 
   const geo = geoResponse.data.data.geo;
-  console.log('GEO result', geo);
-  // TODO dynamic access to city
-  // get closest city based on location for each sport
-  // keep city in a standard way that will work with espn and hopefully anything else
-  // probably keep long name of city, and sport name abbreviation
 
   return {
     name:
@@ -27,10 +48,10 @@ export const getCity = async req => {
         ? [geo.city, geo.region_name, geo.country_name].join(', ') + ' '
         : '') + '(Schedule hardcoded to Boston for now)',
     sports: {
-      baseball: 'bos',
-      basketball: 'bos',
-      football: 'ne',
-      hockey: 'bos'
+      baseball: getClosest(geo, baseball),
+      basketball: getClosest(geo, basketball),
+      football: getClosest(geo, football),
+      hockey: getClosest(geo, hockey)
     }
   };
 };

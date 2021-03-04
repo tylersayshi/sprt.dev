@@ -37,6 +37,7 @@
   },
   "devDependencies": {
     "babel-eslint": "^10.1.0",
+    "babel-plugin-inline-json-import": "^0.3.2",
     "eslint": "^7.20.0",
     "eslint-plugin-jest": "^24.1.5",
     "husky": "4",
@@ -60,7 +61,8 @@
       "@babel/preset-env"
     ],
     "plugins": [
-      "@babel/plugin-transform-runtime"
+      "@babel/plugin-transform-runtime",
+      "inline-json-import"
     ]
   },
   "jest": {
