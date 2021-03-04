@@ -43,15 +43,14 @@ export const getCity = async req => {
   const geo = geoResponse.data.data.geo;
 
   return {
-    name:
-      (geo.city
-        ? [geo.city, geo.region_name, geo.country_name].join(', ') + ' '
-        : '') + '(Schedule hardcoded to Boston for now)',
+    name: geo.city
+      ? [geo.city, geo.region_name, geo.country_name].join(', ') + ' '
+      : 'Unable to detect location - Falling back to Boston',
     sports: {
-      baseball: getClosest(geo, baseball),
-      basketball: getClosest(geo, basketball),
-      football: getClosest(geo, football),
-      hockey: getClosest(geo, hockey)
+      baseball: geo.city ? getClosest(geo, baseball) : 'bos',
+      basketball: geo.city ? getClosest(geo, basketball) : 'bos',
+      football: geo.city ? getClosest(geo, football) : 'ne',
+      hockey: geo.city ? getClosest(geo, hockey) : 'bos'
     }
   };
 };
