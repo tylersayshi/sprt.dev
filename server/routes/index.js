@@ -76,7 +76,10 @@ router.get('/*', async function (req, res) {
   if (req.headers['user-agent'].includes('curl')) {
     res.send(response);
   } else {
-    res.render('index', { table: response, location: city.name.split(',')[0] });
+    res.render('index', {
+      table: response,
+      location: city.name.split(',')[0]
+    });
   }
 });
 
