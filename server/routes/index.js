@@ -76,8 +76,14 @@ router.get('/*', async function (req, res) {
   if (req.headers['user-agent'].includes('curl')) {
     res.send(response);
   } else {
+    // correct spacing so that emojis line up with source code pro font
+    const correctionSpace = '\u2004' + '\u2006' + '\u200A';
+    const correctedTable = Object.values(emojiMap).reduce(
+      (table, emoji) => table.replace(emoji + ' ', emoji + correctionSpace),
+      response
+    );
     res.render('index', {
-      table: response,
+      table: correctedTable,
       location: city.name.split(',')[0]
     });
   }
