@@ -1,0 +1,212 @@
+[
+  {
+    "lat": 33.77729,
+    "lon": -84.39015,
+    "name": "Atlanta Hawks",
+    "abbr": "atl",
+    "city": "Atlanta"
+  },
+  {
+    "lat": 42.33106,
+    "lon": -71.0902,
+    "name": "Boston Celtics",
+    "abbr": "bos",
+    "city": "Boston"
+  },
+  {
+    "lat": 40.66017,
+    "lon": -73.95445,
+    "name": "Brooklyn Nets",
+    "abbr": "bkn",
+    "city": "Brooklyn"
+  },
+  {
+    "lat": 35.19317,
+    "lon": -80.80483,
+    "name": "Charlotte Hornets",
+    "abbr": "cha",
+    "city": "Charlotte"
+  },
+  {
+    "lat": 41.85013,
+    "lon": -87.68808,
+    "name": "Chicago Bulls",
+    "abbr": "chi",
+    "city": "Chicago"
+  },
+  {
+    "lat": 40.4437,
+    "lon": -95.06044,
+    "name": "Cleveland Cavaliers",
+    "abbr": "cle",
+    "city": "Cleveland"
+  },
+  {
+    "lat": 32.80963,
+    "lon": -96.78387,
+    "name": "Dallas Mavericks",
+    "abbr": "dal",
+    "city": "Dallas"
+  },
+  {
+    "lat": 39.73104,
+    "lon": -104.98891,
+    "name": "Denver Nuggets",
+    "abbr": "den",
+    "city": "Denver"
+  },
+  {
+    "lat": 42.38895,
+    "lon": -83.10516,
+    "name": "Detroit Pistons",
+    "abbr": "det",
+    "city": "Detroit"
+  },
+  {
+    "lat": 39.76114,
+    "lon": -105.22193,
+    "name": "Golden State Warriors",
+    "abbr": "gs",
+    "city": "Golden State"
+  },
+  {
+    "lat": 29.77447,
+    "lon": -95.39836,
+    "name": "Houston Rockets",
+    "abbr": "hou",
+    "city": "Houston"
+  },
+  {
+    "lat": -17.84488,
+    "lon": -40.36881,
+    "name": "Indiana Pacers",
+    "abbr": "ind",
+    "city": "Indiana"
+  },
+  {
+    "lat": 93869080769608,
+    "lon": 0,
+    "name": "LA Clippers",
+    "abbr": "lac",
+    "city": "LA"
+  },
+  {
+    "lat": 34.04014,
+    "lon": -118.29757,
+    "name": "Los Angeles Lakers",
+    "abbr": "lal",
+    "city": "Los Angeles"
+  },
+  {
+    "lat": 35.11777,
+    "lon": -89.93794,
+    "name": "Memphis Grizzlies",
+    "abbr": "mem",
+    "city": "Memphis"
+  },
+  {
+    "lat": 25.76849,
+    "lon": -80.28966,
+    "name": "Miami Heat",
+    "abbr": "mia",
+    "city": "Miami"
+  },
+  {
+    "lat": 43.05251,
+    "lon": -87.95963,
+    "name": "Milwaukee Bucks",
+    "abbr": "mil",
+    "city": "Milwaukee"
+  },
+  {
+    "lat": 48.85521,
+    "lon": -102.17428,
+    "name": "Minnesota Timberwolves",
+    "abbr": "min",
+    "city": "Minnesota"
+  },
+  {
+    "lat": 29.94928,
+    "lon": -90.13426,
+    "name": "New Orleans Pelicans",
+    "abbr": "no",
+    "city": "New Orleans"
+  },
+  {
+    "lat": 40.68908,
+    "lon": -73.95861,
+    "name": "New York Knicks",
+    "abbr": "ny",
+    "city": "New York"
+  },
+  {
+    "lat": 35.5022,
+    "lon": -97.50905,
+    "name": "Oklahoma City Thunder",
+    "abbr": "okc",
+    "city": "Oklahoma City"
+  },
+  {
+    "lat": 28.51754,
+    "lon": -81.35926,
+    "name": "Orlando Magic",
+    "abbr": "orl",
+    "city": "Orlando"
+  },
+  {
+    "lat": 40.00156,
+    "lon": -75.13603,
+    "name": "Philadelphia 76ers",
+    "abbr": "phi",
+    "city": "Philadelphia"
+  },
+  {
+    "lat": -29.69912,
+    "lon": 31.01,
+    "name": "Phoenix Suns",
+    "abbr": "phx",
+    "city": "Phoenix"
+  },
+  {
+    "lat": 41.65975,
+    "lon": -87.68112,
+    "name": "Portland Trail Blazers",
+    "abbr": "por",
+    "city": "Portland"
+  },
+  {
+    "lat": -19.88038,
+    "lon": -47.42421,
+    "name": "Sacramento Kings",
+    "abbr": "sac",
+    "city": "Sacramento"
+  },
+  {
+    "lat": 29.45362,
+    "lon": -98.52862,
+    "name": "San Antonio Spurs",
+    "abbr": "sa",
+    "city": "San Antonio"
+  },
+  {
+    "lat": 43.70638,
+    "lon": -79.41946,
+    "name": "Toronto Raptors",
+    "abbr": "tor",
+    "city": "Toronto"
+  },
+  {
+    "lat": 41.6325,
+    "lon": -83.5262,
+    "name": "Utah Jazz",
+    "abbr": "utah",
+    "city": "Utah"
+  },
+  {
+    "lat": 38.91194,
+    "lon": -77.01015,
+    "name": "Washington Wizards",
+    "abbr": "wsh",
+    "city": "Washington"
+  }
+]

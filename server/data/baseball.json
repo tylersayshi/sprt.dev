@@ -1,0 +1,212 @@
+[
+  {
+    "lat": 41.77331,
+    "lon": -96.18927,
+    "name": "Arizona Diamondbacks",
+    "abbr": "ari",
+    "city": "Arizona"
+  },
+  {
+    "lat": 33.77729,
+    "lon": -84.39015,
+    "name": "Atlanta Braves",
+    "abbr": "atl",
+    "city": "Atlanta"
+  },
+  {
+    "lat": 39.3221,
+    "lon": -76.61444,
+    "name": "Baltimore Orioles",
+    "abbr": "bal",
+    "city": "Baltimore"
+  },
+  {
+    "lat": 42.33106,
+    "lon": -71.0902,
+    "name": "Boston Red Sox",
+    "abbr": "bos",
+    "city": "Boston"
+  },
+  {
+    "lat": 41.85013,
+    "lon": -87.68808,
+    "name": "Chicago Cubs",
+    "abbr": "chc",
+    "city": "Chicago"
+  },
+  {
+    "lat": 41.85013,
+    "lon": -87.68808,
+    "name": "Chicago White Sox",
+    "abbr": "chw",
+    "city": "Chicago"
+  },
+  {
+    "lat": 39.16832,
+    "lon": -84.48805,
+    "name": "Cincinnati Reds",
+    "abbr": "cin",
+    "city": "Cincinnati"
+  },
+  {
+    "lat": 40.4437,
+    "lon": -95.06044,
+    "name": "Cleveland Indians",
+    "abbr": "cle",
+    "city": "Cleveland"
+  },
+  {
+    "lat": 37.94646,
+    "lon": -104.84117,
+    "name": "Colorado Rockies",
+    "abbr": "col",
+    "city": "Colorado"
+  },
+  {
+    "lat": 42.38895,
+    "lon": -83.10516,
+    "name": "Detroit Tigers",
+    "abbr": "det",
+    "city": "Detroit"
+  },
+  {
+    "lat": 29.77447,
+    "lon": -95.39836,
+    "name": "Houston Astros",
+    "abbr": "hou",
+    "city": "Houston"
+  },
+  {
+    "lat": 39.0941,
+    "lon": -94.58636,
+    "name": "Kansas City Royals",
+    "abbr": "kc",
+    "city": "Kansas City"
+  },
+  {
+    "lat": 34.04014,
+    "lon": -118.29757,
+    "name": "Los Angeles Angels",
+    "abbr": "laa",
+    "city": "Los Angeles"
+  },
+  {
+    "lat": 34.04014,
+    "lon": -118.29757,
+    "name": "Los Angeles Dodgers",
+    "abbr": "lad",
+    "city": "Los Angeles"
+  },
+  {
+    "lat": 25.76849,
+    "lon": -80.28966,
+    "name": "Miami Marlins",
+    "abbr": "mia",
+    "city": "Miami"
+  },
+  {
+    "lat": 43.05251,
+    "lon": -87.95963,
+    "name": "Milwaukee Brewers",
+    "abbr": "mil",
+    "city": "Milwaukee"
+  },
+  {
+    "lat": 48.85521,
+    "lon": -102.17428,
+    "name": "Minnesota Twins",
+    "abbr": "min",
+    "city": "Minnesota"
+  },
+  {
+    "lat": 40.68908,
+    "lon": -73.95861,
+    "name": "New York Mets",
+    "abbr": "nym",
+    "city": "New York"
+  },
+  {
+    "lat": 40.68908,
+    "lon": -73.95861,
+    "name": "New York Yankees",
+    "abbr": "nyy",
+    "city": "New York"
+  },
+  {
+    "lat": 37.8452,
+    "lon": -122.23933,
+    "name": "Oakland Athletics",
+    "abbr": "oak",
+    "city": "Oakland"
+  },
+  {
+    "lat": 40.00156,
+    "lon": -75.13603,
+    "name": "Philadelphia Phillies",
+    "abbr": "phi",
+    "city": "Philadelphia"
+  },
+  {
+    "lat": 37.41923,
+    "lon": -94.71301,
+    "name": "Pittsburgh Pirates",
+    "abbr": "pit",
+    "city": "Pittsburgh"
+  },
+  {
+    "lat": 32.80823,
+    "lon": -117.12899,
+    "name": "San Diego Padres",
+    "abbr": "sd",
+    "city": "San Diego"
+  },
+  {
+    "lat": 9.9417,
+    "lon": -84.0728,
+    "name": "San Francisco Giants",
+    "abbr": "sf",
+    "city": "San Francisco"
+  },
+  {
+    "lat": 47.62405,
+    "lon": -122.33279,
+    "name": "Seattle Mariners",
+    "abbr": "sea",
+    "city": "Seattle"
+  },
+  {
+    "lat": 38.62041,
+    "lon": -90.25246,
+    "name": "St. Louis Cardinals",
+    "abbr": "stl",
+    "city": "St. Louis"
+  },
+  {
+    "lat": 28.00587,
+    "lon": -82.46607,
+    "name": "Tampa Bay Rays",
+    "abbr": "tb",
+    "city": "Tampa Bay"
+  },
+  {
+    "lat": 40.07907,
+    "lon": -83.63811,
+    "name": "Texas Rangers",
+    "abbr": "tex",
+    "city": "Texas"
+  },
+  {
+    "lat": 43.70638,
+    "lon": -79.41946,
+    "name": "Toronto Blue Jays",
+    "abbr": "tor",
+    "city": "Toronto"
+  },
+  {
+    "lat": 38.91194,
+    "lon": -77.01015,
+    "name": "Washington Nationals",
+    "abbr": "wsh",
+    "city": "Washington"
+  }
+]

@@ -1,0 +1,226 @@
+[
+  {
+    "lat": 41.77331,
+    "lon": -96.18927,
+    "name": "Arizona Cardinals",
+    "abbr": "ari",
+    "city": "Arizona"
+  },
+  {
+    "lat": 33.77729,
+    "lon": -84.39015,
+    "name": "Atlanta Falcons",
+    "abbr": "atl",
+    "city": "Atlanta"
+  },
+  {
+    "lat": 39.3221,
+    "lon": -76.61444,
+    "name": "Baltimore Ravens",
+    "abbr": "bal",
+    "city": "Baltimore"
+  },
+  {
+    "lat": 42.91023,
+    "lon": -78.8375,
+    "name": "Buffalo Bills",
+    "abbr": "buf",
+    "city": "Buffalo"
+  },
+  {
+    "lat": -7.32127,
+    "lon": -47.43881,
+    "name": "Carolina Panthers",
+    "abbr": "car",
+    "city": "Carolina"
+  },
+  {
+    "lat": 41.85013,
+    "lon": -87.68808,
+    "name": "Chicago Bears",
+    "abbr": "chi",
+    "city": "Chicago"
+  },
+  {
+    "lat": 39.16832,
+    "lon": -84.48805,
+    "name": "Cincinnati Bengals",
+    "abbr": "cin",
+    "city": "Cincinnati"
+  },
+  {
+    "lat": 40.4437,
+    "lon": -95.06044,
+    "name": "Cleveland Browns",
+    "abbr": "cle",
+    "city": "Cleveland"
+  },
+  {
+    "lat": 32.80963,
+    "lon": -96.78387,
+    "name": "Dallas Cowboys",
+    "abbr": "dal",
+    "city": "Dallas"
+  },
+  {
+    "lat": 39.73104,
+    "lon": -104.98891,
+    "name": "Denver Broncos",
+    "abbr": "den",
+    "city": "Denver"
+  },
+  {
+    "lat": 42.38895,
+    "lon": -83.10516,
+    "name": "Detroit Lions",
+    "abbr": "det",
+    "city": "Detroit"
+  },
+  {
+    "lat": 44.51703,
+    "lon": -88.02568,
+    "name": "Green Bay Packers",
+    "abbr": "gb",
+    "city": "Green Bay"
+  },
+  {
+    "lat": 29.77447,
+    "lon": -95.39836,
+    "name": "Houston Texans",
+    "abbr": "hou",
+    "city": "Houston"
+  },
+  {
+    "lat": 39.80195,
+    "lon": -86.11386,
+    "name": "Indianapolis Colts",
+    "abbr": "ind",
+    "city": "Indianapolis"
+  },
+  {
+    "lat": 30.30561,
+    "lon": -81.64367,
+    "name": "Jacksonville Jaguars",
+    "abbr": "jax",
+    "city": "Jacksonville"
+  },
+  {
+    "lat": 39.0941,
+    "lon": -94.58636,
+    "name": "Kansas City Chiefs",
+    "abbr": "kc",
+    "city": "Kansas City"
+  },
+  {
+    "lat": 36.18211,
+    "lon": -115.17404,
+    "name": "Las Vegas Raiders",
+    "abbr": "lv",
+    "city": "Las Vegas"
+  },
+  {
+    "lat": 34.04014,
+    "lon": -118.29757,
+    "name": "Los Angeles Chargers",
+    "abbr": "lac",
+    "city": "Los Angeles"
+  },
+  {
+    "lat": 34.04014,
+    "lon": -118.29757,
+    "name": "Los Angeles Rams",
+    "abbr": "lar",
+    "city": "Los Angeles"
+  },
+  {
+    "lat": 25.76849,
+    "lon": -80.28966,
+    "name": "Miami Dolphins",
+    "abbr": "mia",
+    "city": "Miami"
+  },
+  {
+    "lat": 48.85521,
+    "lon": -102.17428,
+    "name": "Minnesota Vikings",
+    "abbr": "min",
+    "city": "Minnesota"
+  },
+  {
+    "lat": 52.59925,
+    "lon": -0.25438,
+    "name": "New England Patriots",
+    "abbr": "ne",
+    "city": "New England"
+  },
+  {
+    "lat": 29.94928,
+    "lon": -90.13426,
+    "name": "New Orleans Saints",
+    "abbr": "no",
+    "city": "New Orleans"
+  },
+  {
+    "lat": 40.68908,
+    "lon": -73.95861,
+    "name": "New York Giants",
+    "abbr": "nyg",
+    "city": "New York"
+  },
+  {
+    "lat": 40.68908,
+    "lon": -73.95861,
+    "name": "New York Jets",
+    "abbr": "nyj",
+    "city": "New York"
+  },
+  {
+    "lat": 40.00156,
+    "lon": -75.13603,
+    "name": "Philadelphia Eagles",
+    "abbr": "phi",
+    "city": "Philadelphia"
+  },
+  {
+    "lat": 37.41923,
+    "lon": -94.71301,
+    "name": "Pittsburgh Steelers",
+    "abbr": "pit",
+    "city": "Pittsburgh"
+  },
+  {
+    "lat": 9.9417,
+    "lon": -84.0728,
+    "name": "San Francisco 49ers",
+    "abbr": "sf",
+    "city": "San Francisco"
+  },
+  {
+    "lat": 47.62405,
+    "lon": -122.33279,
+    "name": "Seattle Seahawks",
+    "abbr": "sea",
+    "city": "Seattle"
+  },
+  {
+    "lat": 28.00587,
+    "lon": -82.46607,
+    "name": "Tampa Bay Buccaneers",
+    "abbr": "tb",
+    "city": "Tampa Bay"
+  },
+  {
+    "lat": 40.40725,
+    "lon": -90.86528,
+    "name": "Tennessee Titans",
+    "abbr": "ten",
+    "city": "Tennessee"
+  },
+  {
+    "lat": 38.91194,
+    "lon": -77.01015,
+    "name": "Washington",
+    "abbr": "wsh",
+    "city": "Washington"
+  }
+]

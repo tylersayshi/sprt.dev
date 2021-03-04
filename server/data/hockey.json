@@ -1,0 +1,219 @@
+[
+  {
+    "lat": 33.83431,
+    "lon": -117.89791,
+    "name": "Anaheim Ducks",
+    "abbr": "ana",
+    "city": "Anaheim"
+  },
+  {
+    "lat": 41.77331,
+    "lon": -96.18927,
+    "name": "Arizona Coyotes",
+    "abbr": "ari",
+    "city": "Arizona"
+  },
+  {
+    "lat": 42.33106,
+    "lon": -71.0902,
+    "name": "Boston Bruins",
+    "abbr": "bos",
+    "city": "Boston"
+  },
+  {
+    "lat": 42.91023,
+    "lon": -78.8375,
+    "name": "Buffalo Sabres",
+    "abbr": "buf",
+    "city": "Buffalo"
+  },
+  {
+    "lat": 51.03866,
+    "lon": -114.07198,
+    "name": "Calgary Flames",
+    "abbr": "cgy",
+    "city": "Calgary"
+  },
+  {
+    "lat": -7.32127,
+    "lon": -47.43881,
+    "name": "Carolina Hurricanes",
+    "abbr": "car",
+    "city": "Carolina"
+  },
+  {
+    "lat": 41.85013,
+    "lon": -87.68808,
+    "name": "Chicago Blackhawks",
+    "abbr": "chi",
+    "city": "Chicago"
+  },
+  {
+    "lat": 37.94646,
+    "lon": -104.84117,
+    "name": "Colorado Avalanche",
+    "abbr": "col",
+    "city": "Colorado"
+  },
+  {
+    "lat": 48.36264,
+    "lon": -114.18702,
+    "name": "Columbus Blue Jackets",
+    "abbr": "cbj",
+    "city": "Columbus"
+  },
+  {
+    "lat": 32.80963,
+    "lon": -96.78387,
+    "name": "Dallas Stars",
+    "abbr": "dal",
+    "city": "Dallas"
+  },
+  {
+    "lat": 42.38895,
+    "lon": -83.10516,
+    "name": "Detroit Red Wings",
+    "abbr": "det",
+    "city": "Detroit"
+  },
+  {
+    "lat": -17.02368,
+    "lon": 145.73357,
+    "name": "Edmonton Oilers",
+    "abbr": "edm",
+    "city": "Edmonton"
+  },
+  {
+    "lat": -34.09795,
+    "lon": -56.23331,
+    "name": "Florida Panthers",
+    "abbr": "fla",
+    "city": "Florida"
+  },
+  {
+    "lat": 34.04014,
+    "lon": -118.29757,
+    "name": "Los Angeles Kings",
+    "abbr": "la",
+    "city": "Los Angeles"
+  },
+  {
+    "lat": 48.85521,
+    "lon": -102.17428,
+    "name": "Minnesota Wild",
+    "abbr": "min",
+    "city": "Minnesota"
+  },
+  {
+    "lat": 45.50935,
+    "lon": -73.57225,
+    "name": "Montreal Canadiens",
+    "abbr": "mtl",
+    "city": "Montreal"
+  },
+  {
+    "lat": 36.14014,
+    "lon": -86.78389,
+    "name": "Nashville Predators",
+    "abbr": "nsh",
+    "city": "Nashville"
+  },
+  {
+    "lat": null,
+    "lon": null,
+    "name": "New Jersey Devils",
+    "abbr": "nj",
+    "city": "New Jersey"
+  },
+  {
+    "lat": 40.68908,
+    "lon": -73.95861,
+    "name": "New York Islanders",
+    "abbr": "nyi",
+    "city": "New York"
+  },
+  {
+    "lat": 40.68908,
+    "lon": -73.95861,
+    "name": "New York Rangers",
+    "abbr": "nyr",
+    "city": "New York"
+  },
+  {
+    "lat": 45.35917,
+    "lon": -75.70531,
+    "name": "Ottawa Senators",
+    "abbr": "ott",
+    "city": "Ottawa"
+  },
+  {
+    "lat": 40.00156,
+    "lon": -75.13603,
+    "name": "Philadelphia Flyers",
+    "abbr": "phi",
+    "city": "Philadelphia"
+  },
+  {
+    "lat": 37.41923,
+    "lon": -94.71301,
+    "name": "Pittsburgh Penguins",
+    "abbr": "pit",
+    "city": "Pittsburgh"
+  },
+  {
+    "lat": 10.0293,
+    "lon": -84.0275,
+    "name": "San Jose Sharks",
+    "abbr": "sj",
+    "city": "San Jose"
+  },
+  {
+    "lat": 38.62041,
+    "lon": -90.25246,
+    "name": "St. Louis Blues",
+    "abbr": "stl",
+    "city": "St. Louis"
+  },
+  {
+    "lat": 28.00587,
+    "lon": -82.46607,
+    "name": "Tampa Bay Lightning",
+    "abbr": "tb",
+    "city": "Tampa Bay"
+  },
+  {
+    "lat": 43.70638,
+    "lon": -79.41946,
+    "name": "Toronto Maple Leafs",
+    "abbr": "tor",
+    "city": "Toronto"
+  },
+  {
+    "lat": 49.24847,
+    "lon": -123.10299,
+    "name": "Vancouver Canucks",
+    "abbr": "van",
+    "city": "Vancouver"
+  },
+  {
+    "lat": 28.01599,
+    "lon": -15.55531,
+    "name": "Vegas Golden Knights",
+    "abbr": "vgs",
+    "city": "Vegas"
+  },
+  {
+    "lat": 38.91194,
+    "lon": -77.01015,
+    "name": "Washington Capitals",
+    "abbr": "wsh",
+    "city": "Washington"
+  },
+  {
+    "lat": 49.90283,
+    "lon": -97.16137,
+    "name": "Winnipeg Jets",
+    "abbr": "wpg",
+    "city": "Winnipeg"
+  }
+]
