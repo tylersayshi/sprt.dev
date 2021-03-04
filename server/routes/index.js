@@ -16,10 +16,10 @@ var router = express.Router();
 router.get('/*', async function (req, res) {
   const city = await getCity(req);
   // load three from mock
-  const basketballPromise = getESPN('basketball', city.sports.basketball);
-  const hockeyPromise = getESPN('hockey', city.sports.hockey);
-  const baseballPromise = getESPN('baseball', city.sports.baseball);
-  const footballPromise = getESPN('football', city.sports.football);
+  const basketballPromise = getESPN('basketball', city.sports.basketball.abbr);
+  const hockeyPromise = getESPN('hockey', city.sports.hockey.abbr);
+  const baseballPromise = getESPN('baseball', city.sports.baseball.abbr);
+  const footballPromise = getESPN('football', city.sports.football.abbr);
 
   const [
     basketballGames,
@@ -36,26 +36,30 @@ router.get('/*', async function (req, res) {
   const dataForTable = [
     {
       name: 'basketball',
-      games: basketballGames
+      games: basketballGames,
+      team: city.sports.basketball.name
     },
     {
       name: 'hockey',
-      games: hockeyGames
+      games: hockeyGames,
+      team: city.sports.hockey.name
     },
     {
       name: 'baseball',
-      games: baseballGames
+      games: baseballGames,
+      team: city.sports.baseball.name
     },
     {
       name: 'football',
-      games: footballGames
+      games: footballGames,
+      team: city.sports.football.name
     }
   ];
 
   const parsedDataForTable = dataForTable.reduce((acc, sport) => {
     if (sport.games) {
       acc.push([
-        `${emojiMap[sport.name]} ${capitalizeFirst(sport.name)}`,
+        `${emojiMap[sport.name]} ${capitalizeFirst(sport.name)}\n${sport.team}`,
         ...sport.games
       ]);
     }

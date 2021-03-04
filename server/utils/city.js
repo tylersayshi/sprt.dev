@@ -6,12 +6,13 @@ import hockey from '../data/hockey.json';
 import { distance } from './helpers';
 
 const getClosest = (loc, data) => {
-  const closestTeam = data.reduce(
+  return data.reduce(
     (min, team) => {
       const d = distance(loc.lat, loc.lon, team.lat, team.lon);
       if (d < min.d) {
         return {
           abbr: team.abbr,
+          name: team.name,
           d
         };
       } else {
@@ -20,11 +21,13 @@ const getClosest = (loc, data) => {
     },
     {
       abbr: data[0].abbr,
+      name: data[0].name,
       d: Infinity
     }
   );
-  return closestTeam.abbr;
 };
+
+const getByAbbreviation = (abbr, data) => data.find(team => team.abbr === abbr);
 
 export const getCity = async req => {
   let geo;
@@ -81,10 +84,16 @@ export const getCity = async req => {
   return {
     name: geo ? geo.name : 'Unable to detect location - Falling back to Boston',
     sports: {
-      baseball: geo ? getClosest(geo, baseball) : 'bos',
-      basketball: geo ? getClosest(geo, basketball) : 'bos',
-      football: geo ? getClosest(geo, football) : 'ne',
-      hockey: geo ? getClosest(geo, hockey) : 'bos'
+      baseball: geo
+        ? getClosest(geo, baseball)
+        : getByAbbreviation('bos', baseball),
+      basketball: geo
+        ? getClosest(geo, basketball)
+        : getByAbbreviation('bos', basketball),
+      football: geo
+        ? getClosest(geo, football)
+        : getByAbbreviation('ne', football),
+      hockey: geo ? getClosest(geo, hockey) : getByAbbreviation('bos', hockey)
     }
   };
 };
