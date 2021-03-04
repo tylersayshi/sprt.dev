@@ -55,7 +55,8 @@
     "ignore": [
       "**/__tests__/**",
       "*.test.js"
-    ]
+    ],
+    "ext": "js,json,jade,css"
   },
   "babel": {
     "presets": [

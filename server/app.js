@@ -10,14 +10,6 @@ import indexRouter from './routes/index';
 
 var app = express();
 
-const unless = (middleware, ...paths) => {
-  return function (req, res, next) {
-    const reqStartPath = '/' + req.path.split('/')[1];
-    const pathCheck = paths.some(path => path === reqStartPath);
-    pathCheck ? next() : middleware(req, res, next);
-  };
-};
-
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -25,12 +17,11 @@ app.use(cookieParser());
 
 app.set('trust proxy', '127.0.0.1');
 
-app.use(unless(indexRouter, '/stylesheets', '/images'));
+app.use(express.static(path.join(__dirname, '../public')));
+app.use('/*', indexRouter);
 
 // view engine setup
 app.set('views', path.join(__dirname, '../server/views'));
 app.set('view engine', 'jade');
-
-app.use(express.static(path.join(__dirname, '../public')));
 
 export default app;
