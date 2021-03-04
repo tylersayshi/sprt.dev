@@ -68,7 +68,7 @@ router.get('/*', async function (req, res) {
   const response =
     `Sport schedule: ${city.name}\n\n` +
     gamesTable +
-    '\nSee @tylerjlawson/sprt.dev on Github for sprt.dev updates\n';
+    '\nSee this project @tylerjlawson/sprt.dev on Github for more information\n';
 
   // Testing for presence of curl in user agent
   // goal of this is to test if the request is coming from a terminal vs a browser
