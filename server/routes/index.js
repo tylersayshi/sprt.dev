@@ -1,6 +1,5 @@
 import express from 'express';
 import { table } from 'table';
-import { capitalizeFirst } from '../utils/helpers';
 import { getESPN } from '../utils/espn';
 import { getCity } from '../utils/city';
 
@@ -58,10 +57,7 @@ router.get('/*', async function (req, res) {
 
   const parsedDataForTable = dataForTable.reduce((acc, sport) => {
     if (sport.games) {
-      acc.push([
-        `${emojiMap[sport.name]} ${capitalizeFirst(sport.name)}\n${sport.team}`,
-        ...sport.games
-      ]);
+      acc.push([`${emojiMap[sport.name]} ${sport.team}`, ...sport.games]);
     }
     return acc;
   }, []);
