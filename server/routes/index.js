@@ -13,7 +13,7 @@ const emojiMap = {
 };
 
 var router = express.Router();
-router.get('/', async function (req, res) {
+router.get('/*', async function (req, res) {
   const city = await getCity(req);
   // load three from mock
   const basketballPromise = getESPN('basketball', city.sports.basketball);
