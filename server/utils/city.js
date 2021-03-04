@@ -32,7 +32,7 @@ const getByAbbreviation = (abbr, data) => data.find(team => team.abbr === abbr);
 export const getCity = async req => {
   let geo;
   try {
-    if (req.path === '/') {
+    if (req.baseUrl === '/') {
       // remove ipv4 prefix
       let ip = req.headers['x-forwarded-for'] || req.ip.replace('::ffff:', '');
       if (ip.includes('127.0.0.1') || ip === '::1') {
@@ -58,7 +58,7 @@ export const getCity = async req => {
         };
       }
     } else {
-      const search = req.path.substr(1);
+      const search = req.baseUrl.substr(1);
       const googRes = await axios.get(
         `https://maps.googleapis.com/maps/api/geocode/json?address=${search}&components=short_name:CA|short_name:US&region=us&key=${process.env.GOOGLE_API_KEY}`
       );
