@@ -4,7 +4,7 @@ node_modules
 dist
 
 # environment variables
-env.json
+.env
 
 # yarn error logs
 *.log

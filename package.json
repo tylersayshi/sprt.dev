@@ -38,6 +38,7 @@
   "devDependencies": {
     "babel-eslint": "^10.1.0",
     "babel-plugin-inline-json-import": "^0.3.2",
+    "dotenv": "^8.2.0",
     "eslint": "^7.20.0",
     "eslint-plugin-jest": "^24.1.5",
     "husky": "4",
