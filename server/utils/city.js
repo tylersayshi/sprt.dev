@@ -32,7 +32,7 @@ const getByAbbreviation = (abbr, data) => data.find(team => team.abbr === abbr);
 export const getCity = async req => {
   let geo;
   try {
-    if (req.baseUrl === '/') {
+    if (req.baseUrl === '') {
       // remove ipv4 prefix
       let ip = req.headers['x-forwarded-for'] || req.ip.replace('::ffff:', '');
       if (ip.includes('127.0.0.1') || ip === '::1') {
