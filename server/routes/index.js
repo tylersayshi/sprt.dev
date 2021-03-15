@@ -14,45 +14,19 @@ const emojiMap = {
 var router = express.Router();
 router.get('/*', async function (req, res) {
   const city = await getCity(req);
-  const basketballPromise = getESPN('basketball', city.sports.basketball.abbr);
-  const hockeyPromise = getESPN('hockey', city.sports.hockey.abbr);
-  const baseballPromise = getESPN('baseball', city.sports.baseball.abbr);
-  const footballPromise = getESPN('football', city.sports.football.abbr);
+  const sportsKeys = Object.keys(city.sports);
+  const responses = await Promise.allSettled(
+    sportsKeys.reduce((acc, sport) => {
+      const cityTeams = city.sports[sport];
+      cityTeams.forEach(team => acc.push(getESPN(sport, team.abbr)));
+      return acc;
+    }, [])
+  );
 
-  const [
-    basketballGames,
-    hockeyGames,
-    baseballGames,
-    footballGames
-  ] = await Promise.all([
-    basketballPromise,
-    hockeyPromise,
-    baseballPromise,
-    footballPromise
-  ]);
-
-  const dataForTable = [
-    {
-      name: 'basketball',
-      games: basketballGames,
-      team: city.sports.basketball.name
-    },
-    {
-      name: 'hockey',
-      games: hockeyGames,
-      team: city.sports.hockey.name
-    },
-    {
-      name: 'baseball',
-      games: baseballGames,
-      team: city.sports.baseball.name
-    },
-    {
-      name: 'football',
-      games: footballGames,
-      team: city.sports.football.name
-    }
-  ];
+  const dataForTable = responses.reduce((acc, res) => {
+    if (res.status === 'fulfilled' && res.value) acc.push(res.value);
+    return acc;
+  }, []);
 
   const parsedDataForTable = dataForTable.reduce((acc, sport) => {
     if (sport.games) {

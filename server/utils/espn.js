@@ -53,7 +53,11 @@ export const getESPN = async (sport, teamName) => {
     // edge of season fill cells with space so that it fits in grid
     while (parsedRows.length < 3) parsedRows.push(' ');
 
-    return parsedRows;
+    return {
+      name: sport,
+      games: parsedRows,
+      team: teamName
+    };
   } catch (error) {
     console.log(`Error getting data for ${sport}`, error);
     return;

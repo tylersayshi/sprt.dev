@@ -7,27 +7,39 @@ import { distance } from './helpers';
 
 const getClosest = (loc, data) => {
   return data.reduce(
-    (min, team) => {
+    (mins, team) => {
       const d = distance(loc.lat, loc.lon, team.lat, team.lon);
-      if (d < min.d) {
-        return {
+      if (d < mins[0].d) {
+        return [
+          {
+            abbr: team.abbr,
+            name: team.name,
+            d
+          }
+        ];
+      } else if (d === mins.d) {
+        mins.push({
           abbr: team.abbr,
           name: team.name,
           d
-        };
+        });
       } else {
-        return min;
+        return mins;
       }
     },
-    {
-      abbr: data[0].abbr,
-      name: data[0].name,
-      d: Infinity
-    }
+    [
+      {
+        abbr: data[0].abbr,
+        name: data[0].name,
+        d: Infinity
+      }
+    ]
   );
 };
 
-const getByAbbreviation = (abbr, data) => data.find(team => team.abbr === abbr);
+const getByAbbreviation = (abbr, data) => [
+  data.find(team => team.abbr === abbr)
+];
 
 export const getCity = async req => {
   let geo;
