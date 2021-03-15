@@ -18,7 +18,7 @@ router.get('/*', async function (req, res) {
   const responses = await Promise.allSettled(
     sportsKeys.reduce((acc, sport) => {
       const cityTeams = city.sports[sport];
-      cityTeams.forEach(team => acc.push(getESPN(sport, team.abbr)));
+      cityTeams.forEach(team => acc.push(getESPN(sport, team.abbr, team.name)));
       return acc;
     }, [])
   );

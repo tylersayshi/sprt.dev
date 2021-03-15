@@ -11,7 +11,7 @@ const sportMap = {
 const scheduleURL = (sport, team) =>
   `https://site.api.espn.com/apis/site/v2/sports/${sport}/${sportMap[sport]}/teams/${team}/schedule`;
 
-export const getESPN = async (sport, teamName) => {
+export const getESPN = async (sport, teamName, fullName) => {
   try {
     const espnResp = await axios.get(scheduleURL(sport, teamName));
 
@@ -56,7 +56,7 @@ export const getESPN = async (sport, teamName) => {
     return {
       name: sport,
       games: parsedRows,
-      team: teamName
+      team: fullName
     };
   } catch (error) {
     console.log(`Error getting data for ${sport}`, error);

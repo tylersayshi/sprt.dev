@@ -17,12 +17,13 @@ const getClosest = (loc, data) => {
             d
           }
         ];
-      } else if (d === mins.d) {
+      } else if (d === mins[0].d) {
         mins.push({
           abbr: team.abbr,
           name: team.name,
           d
         });
+        return mins;
       } else {
         return mins;
       }
