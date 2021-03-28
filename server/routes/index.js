@@ -2,6 +2,7 @@ import express from 'express';
 import { table } from 'table';
 import { getESPN } from '../utils/espn';
 import { getCity } from '../utils/city';
+import { trackEvent } from '../utils/googleAnalytics';
 
 // lookup table to hold emoji for each sport
 const emojiMap = {
@@ -13,6 +14,9 @@ const emojiMap = {
 
 var router = express.Router();
 router.get('/*', async function (req, res) {
+  // track with google analytics
+  const trackPromise = trackEvent('search');
+
   const city = await getCity(req);
   const sportsKeys = Object.keys(city.sports);
   const responses = await Promise.allSettled(
@@ -43,6 +47,9 @@ router.get('/*', async function (req, res) {
     `Sport schedule: ${city.name}\n\n` +
     gamesTable +
     '\nSee this project @tylerjlawson/sprt.dev on Github for more information\n';
+
+  // ensure tracking is resolved before returning
+  await trackPromise;
 
   // Testing for presence of curl in user agent
   // goal of this is to test if the request is coming from a terminal vs a browser

@@ -10,6 +10,8 @@ import indexRouter from './routes/index';
 
 var app = express();
 
+app.enable('trust proxy');
+
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
