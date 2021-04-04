@@ -1154,6 +1154,11 @@
   dependencies:
     defer-to-connect "^1.0.1"
 
+"@tylerjlawson/prettier@^1.0.12":
+  version "1.0.12"
+  resolved "https://registry.yarnpkg.com/@tylerjlawson/prettier/-/prettier-1.0.12.tgz#8f7b3099598ee1c59fac80a3085324daef6ef949"
+  integrity sha512-CibluVl/qsmE39nzcOATGNRpyMud6h7SFuh6ogmAyF/+W2NpmC2xCywa4VQuP/lVZwXA3Lgv4c936eSxsUgmDQ==
+
 "@types/babel__core@^7.0.0", "@types/babel__core@^7.1.7":
   version "7.1.12"
   resolved "https://registry.yarnpkg.com/@types/babel__core/-/babel__core-7.1.12.tgz#4d8e9e51eb265552a7e4f1ff2219ab6133bdfb2d"

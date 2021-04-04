@@ -37,6 +37,7 @@
     "table": "^6.0.7"
   },
   "devDependencies": {
+    "@tylerjlawson/prettier": "^1.0.12",
     "babel-eslint": "^10.1.0",
     "babel-plugin-inline-json-import": "^0.3.2",
     "eslint": "^7.20.0",
@@ -74,5 +75,6 @@
     "hooks": {
       "pre-commit": "yarn lint && pretty-quick --staged"
     }
-  }
+  },
+  "prettier": "@tylerjlawson/prettier"
 }
