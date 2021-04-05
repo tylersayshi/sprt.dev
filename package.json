@@ -7,7 +7,7 @@
     "yarn": ">=1.22.10"
   },
   "scripts": {
-    "start": "yarn build && node ./dist/server/bin/www",
+    "start": "node ./dist/server/bin/www",
     "dev": "npm-run-all copy-files start-dev",
     "start-dev": "ts-node-dev ./server/bin/www.ts --respawn --transpileOnly",
     "build": "npm-run-all clean ts-build copy-files",
