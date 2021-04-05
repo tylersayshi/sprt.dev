@@ -1,19 +1,20 @@
 import axios from 'axios';
-
-const sportMap = {
-  basketball: 'nba',
-  hockey: 'nhl',
-  football: 'nfl',
-  baseball: 'mlb'
-};
+import { Sport, sportsLeagueMap, SportRow } from '../../types/sports';
+import { ScheduleResponse } from '../../types/espn';
 
 // helper to get espn url given a team code
-const scheduleURL = (sport, team) =>
-  `https://site.api.espn.com/apis/site/v2/sports/${sport}/${sportMap[sport]}/teams/${team}/schedule`;
+const scheduleURL = (sport: Sport, team: string) =>
+  `https://site.api.espn.com/apis/site/v2/sports/${sport}/${sportsLeagueMap[sport]}/teams/${team}/schedule`;
 
-export const getESPN = async (sport, teamName, fullName) => {
+export const getESPN = async (
+  sport: Sport,
+  teamName: string,
+  fullName: string
+): Promise<SportRow> => {
   try {
-    const espnResp = await axios.get(scheduleURL(sport, teamName));
+    const espnResp = await axios.get<ScheduleResponse>(
+      scheduleURL(sport, teamName)
+    );
 
     const events = espnResp.data.events;
 

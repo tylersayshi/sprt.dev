@@ -7,19 +7,17 @@
     "yarn": ">=1.22.10"
   },
   "scripts": {
-    "start": "node ./dist/bin/www",
-    "dev": "nodemon",
-    "start:dev": "NODE_ENV=development npm-run-all build start",
-    "pretty": "prettier --write {server,public}/**/**.js",
-    "lint": "eslint '{public,server}/**/*.js'",
-    "build": "npm-run-all clean transpile",
-    "transpile": "babel ./server --out-dir dist",
+    "start": "yarn build && node ./dist/server/bin/www",
+    "dev": "npm-run-all copy-files start-dev",
+    "start-dev": "ts-node-dev ./server/bin/www.ts --respawn --transpileOnly",
+    "build": "npm-run-all clean ts-build copy-files",
+    "ts-build": "tsc",
     "clean": "rimraf dist",
-    "test": "jest",
-    "test:watch": "jest --watch"
+    "copy-files": "cp -r ./server/views/ ./dist/server && cp -r ./public dist",
+    "pretty": "prettier --write {server,public}/**/**.ts",
+    "lint": "eslint '{public,server}/**/*.ts'"
   },
   "dependencies": {
-    "@babel/cli": "^7.13.0",
     "@babel/core": "^7.13.8",
     "@babel/plugin-transform-runtime": "^7.13.8",
     "@babel/preset-env": "^7.13.8",
@@ -38,6 +36,13 @@
   },
   "devDependencies": {
     "@tylerjlawson/prettier": "^1.0.12",
+    "@types/cookie-parser": "^1.4.2",
+    "@types/express": "^4.17.11",
+    "@types/morgan": "^1.9.2",
+    "@types/node": "^14.14.37",
+    "@types/table": "^6.0.0",
+    "@typescript-eslint/eslint-plugin": "^4.20.0",
+    "@typescript-eslint/parser": "^4.20.0",
     "babel-eslint": "^10.1.0",
     "babel-plugin-inline-json-import": "^0.3.2",
     "eslint": "^7.20.0",
@@ -45,19 +50,10 @@
     "husky": "4",
     "jest": "^26.6.3",
     "prettier": "^2.2.1",
-    "pretty-quick": "^3.1.0"
-  },
-  "nodemonConfig": {
-    "exec": "yarn start:dev",
-    "watch": [
-      "server/*",
-      "public/*"
-    ],
-    "ignore": [
-      "**/__tests__/**",
-      "*.test.js"
-    ],
-    "ext": "js,json,jade,css"
+    "pretty-quick": "^3.1.0",
+    "ts-node": "^9.1.1",
+    "ts-node-dev": "^1.1.6",
+    "typescript": "^4.2.3"
   },
   "babel": {
     "presets": [
@@ -67,9 +63,6 @@
       "@babel/plugin-transform-runtime",
       "inline-json-import"
     ]
-  },
-  "jest": {
-    "testEnvironment": "node"
   },
   "husky": {
     "hooks": {

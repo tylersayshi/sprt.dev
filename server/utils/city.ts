@@ -4,9 +4,35 @@ import football from '../data/football.json';
 import baseball from '../data/baseball.json';
 import hockey from '../data/hockey.json';
 import { distance } from './helpers';
+import { Request } from 'express';
+import { GeoTeam, TeamWithLocation, SportMap } from '../../types/sports';
+import { GeoSearchResponse } from '../../types/geoSearch';
+import { GoogleResponse } from '../../types/google';
 
-const getClosest = (loc, data) => {
-  return data.reduce(
+export interface CityTeam {
+  /**
+   * name of the team in closest city
+   */
+  name: string;
+  /**
+   * teams abbreviation (used with espn search)
+   */
+  abbr: string;
+}
+
+interface CityResponse {
+  /**
+   * name of the city being searched with
+   */
+  name: string;
+  /**
+   * map of all sports returned for a given city
+   */
+  sports: SportMap<CityTeam[]>;
+}
+
+const getClosest = (loc: GeoTeam, data: TeamWithLocation[]): CityTeam[] => {
+  const closest = data.reduce(
     (mins, team) => {
       const d = distance(loc.lat, loc.lon, team.lat, team.lon);
       if (d < mins[0].d) {
@@ -36,43 +62,65 @@ const getClosest = (loc, data) => {
       }
     ]
   );
+  return closest.map(city => ({
+    abbr: city.abbr,
+    name: city.name
+  }));
 };
 
-const getByAbbreviation = (abbr, data) => [
-  data.find(team => team.abbr === abbr)
-];
+const getByAbbreviation = (
+  abbr: string,
+  data: TeamWithLocation[]
+): CityTeam[] => {
+  const foundTeam = data.find(team => team.abbr === abbr);
+  return [
+    {
+      abbr: foundTeam.abbr,
+      name: foundTeam.name
+    }
+  ];
+};
 
-export const getCity = async req => {
-  let geo;
+export const getCity = async (req: Request): Promise<CityResponse> => {
+  let geo: GeoTeam;
   try {
     if (req.baseUrl === '') {
       // remove ipv4 prefix
       let ip = req.headers['x-forwarded-for'] || req.ip.replace('::ffff:', '');
       if (ip === '127.0.0.1' || ip === '::1') {
         // lookup local public ip in development since express says localhost
-        const { data } = await axios.get('http://bot.whatismyipaddress.com');
+        const { data } = await axios.get<string>(
+          'http://bot.whatismyipaddress.com'
+        );
         ip = data;
       }
       const geoResponse = await axios
-        .get('https://tools.keycdn.com/geo.json?host=' + ip, {
-          headers: { 'user-agent': 'keycdn-tools:https://www.sprt.dev' }
-        })
+        .get<GeoSearchResponse>(
+          'https://tools.keycdn.com/geo.json?host=' + ip,
+          {
+            headers: { 'user-agent': 'keycdn-tools:https://www.sprt.dev' }
+          }
+        )
         .catch(err => console.log('Error getting geolocation from ip', err));
 
-      const apiGeo = geoResponse.data.data.geo;
-      if (apiGeo.city) {
-        geo = {
-          name: [apiGeo.city, apiGeo.region_name, apiGeo.country_name].join(
-            ', '
-          ),
-          city: apiGeo.city,
-          lat: apiGeo.latitude,
-          lon: apiGeo.longitude
-        };
+      if (geoResponse) {
+        const apiGeo = geoResponse.data.data.geo;
+        if (apiGeo.city) {
+          geo = {
+            name: [apiGeo.city, apiGeo.region_name, apiGeo.country_name].join(
+              ', '
+            ),
+            city: apiGeo.city,
+            lat: apiGeo.latitude,
+            lon: apiGeo.longitude
+          };
+        }
+      } else {
+        throw Error;
       }
     } else {
       const search = req.baseUrl.substr(1);
-      const googRes = await axios.get(
+      const googRes = await axios.get<GoogleResponse>(
         `https://maps.googleapis.com/maps/api/geocode/json?address=${search}&components=short_name:CA|short_name:US&region=us&key=${process.env.GOOGLE_API_KEY}`
       );
       const googSearchResults = googRes.data.results;
