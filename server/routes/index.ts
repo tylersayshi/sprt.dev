@@ -2,28 +2,28 @@ import express from 'express';
 import { table } from 'table';
 import { getESPN } from '../utils/espn';
 import { getCity } from '../utils/city';
+import { SportMap, sportNames, SportRow } from '../../types/sports';
 
 // lookup table to hold emoji for each sport
-const emojiMap = {
+const emojiMap: SportMap<string> = {
   hockey: '🏒',
   basketball: '🏀',
   baseball: '⚾',
   football: '🏈'
 };
 
-var router = express.Router();
+const router = express.Router();
 router.get('/*', async function (req, res) {
   const city = await getCity(req);
-  const sportsKeys = Object.keys(city.sports);
   const responses = await Promise.allSettled(
-    sportsKeys.reduce((acc, sport) => {
+    sportNames.reduce<Promise<SportRow>[]>((acc, sport) => {
       const cityTeams = city.sports[sport];
       cityTeams.forEach(team => acc.push(getESPN(sport, team.abbr, team.name)));
       return acc;
     }, [])
   );
 
-  const dataForTable = responses.reduce((acc, res) => {
+  const dataForTable = responses.reduce<SportRow[]>((acc, res) => {
     if (res.status === 'fulfilled' && res.value) acc.push(res.value);
     return acc;
   }, []);

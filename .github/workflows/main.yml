@@ -36,8 +36,3 @@ jobs:
         uses: borales/actions-yarn@v2.3.0
         with:
           cmd: build
-
-      - name: test
-        uses: borales/actions-yarn@v2.3.0
-        with:
-          cmd: test
