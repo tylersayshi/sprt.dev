@@ -98,7 +98,7 @@ export const getCity = async (req: Request): Promise<CityResponse> => {
         .get<GeoSearchResponse>(
           'https://tools.keycdn.com/geo.json?host=' + ip,
           {
-            headers: { 'user-agent': 'keycdn-tools:https://www.sprt.dev' }
+            headers: { 'user-agent': 'keycdn-tools:https://sprt.dev' }
           }
         )
         .catch(err => console.log('Error getting geolocation from ip', err));
