@@ -33,7 +33,7 @@ interface CityResponse {
 
 const closeEnough = (a: number, b: number) => {
   const diff = a - b;
-  return diff < 50;
+  return diff < 25;
 };
 
 const getClosest = (loc: GeoTeam, data: TeamWithLocation[]): CityTeam[] => {
