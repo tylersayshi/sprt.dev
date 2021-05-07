@@ -31,6 +31,11 @@ interface CityResponse {
   sports: SportMap<CityTeam[]>;
 }
 
+const closeEnough = (a: number, b: number) => {
+  const diff = a - b;
+  return diff < 50;
+};
+
 const getClosest = (loc: GeoTeam, data: TeamWithLocation[]): CityTeam[] => {
   const closest = data.reduce(
     (mins, team) => {
@@ -43,7 +48,7 @@ const getClosest = (loc: GeoTeam, data: TeamWithLocation[]): CityTeam[] => {
             d
           }
         ];
-      } else if (d === mins[0].d) {
+      } else if (closeEnough(d, mins[0].d)) {
         mins.push({
           abbr: team.abbr,
           name: team.name,
