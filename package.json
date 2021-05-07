@@ -2,10 +2,6 @@
   "name": "sprt.dev",
   "version": "0.0.1",
   "license": "MIT",
-  "engines": {
-    "node": ">=14.15.3",
-    "yarn": ">=1.22.10"
-  },
   "scripts": {
     "start": "node ./dist/server/bin/www",
     "dev": "npm-run-all copy-files start-dev",
@@ -66,7 +62,7 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": "npm run lint && pretty-quick --staged"
+      "pre-commit": "yarn lint && pretty-quick --staged"
     }
   },
   "prettier": "@tylerjlawson/prettier"

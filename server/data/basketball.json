@@ -77,8 +77,8 @@
     "city": "Houston"
   },
   {
-    "lat": -17.84488,
-    "lon": -40.36881,
+    "lat": 39.768452,
+    "lon": -86.156212,
     "name": "Indiana Pacers",
     "abbr": "ind",
     "city": "Indiana"
@@ -119,8 +119,8 @@
     "city": "Milwaukee"
   },
   {
-    "lat": 48.85521,
-    "lon": -102.17428,
+    "lat": 44.9795,
+    "lon": -93.2761,
     "name": "Minnesota Timberwolves",
     "abbr": "min",
     "city": "Minnesota"
@@ -161,22 +161,22 @@
     "city": "Philadelphia"
   },
   {
-    "lat": -29.69912,
-    "lon": 31.01,
+    "lat": 33.448377,
+    "lon": -112.074037,
     "name": "Phoenix Suns",
     "abbr": "phx",
     "city": "Phoenix"
   },
   {
-    "lat": 41.65975,
-    "lon": -87.68112,
+    "lat": 45.505106,
+    "lon": -122.675026,
     "name": "Portland Trail Blazers",
     "abbr": "por",
     "city": "Portland"
   },
   {
-    "lat": -19.88038,
-    "lon": -47.42421,
+    "lat": 38.581572,
+    "lon": -121.4944,
     "name": "Sacramento Kings",
     "abbr": "sac",
     "city": "Sacramento"
