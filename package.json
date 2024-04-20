@@ -8,7 +8,7 @@
     "start-dev": "ts-node-dev ./server/bin/www.ts --respawn --transpileOnly",
     "build": "npm-run-all clean ts-build copy-files",
     "ts-build": "tsc",
-    "clean": "rimraf dist",
+    "clean": "rm -rf dist",
     "copy-files": "cp -r ./server/views/ ./dist/server && cp -r ./public dist",
     "pretty": "prettier --write {server,public}/**/**.ts",
     "lint": "eslint '{public,server}/**/*.ts'"
@@ -26,7 +26,6 @@
     "morgan": "^1.10.0",
     "nodemon": "^3.1.0",
     "npm-run-all": "^4.1.5",
-    "rimraf": "^5.0.5",
     "table": "^6.8.2"
   },
   "devDependencies": {
@@ -35,7 +34,6 @@
     "@types/express": "^4.17.21",
     "@types/morgan": "^1.9.9",
     "@types/node": "^20.12.7",
-    "@types/rimraf": "^4.0.5",
     "@types/table": "^6.0.0",
     "@typescript-eslint/eslint-plugin": "^7.7.0",
     "@typescript-eslint/parser": "^7.7.0",
