@@ -34,6 +34,11 @@ export const writeToJson = (name: string, data: AnyObject) =>
 
 type DistanceUnit = 'K' | 'N';
 
+interface Point {
+  lat: number;
+  lon: number;
+}
+
 /**
  * Helper to get distance between two points
  * @see https://www.geodatasource.com/developers/javascript
@@ -43,8 +48,8 @@ export const distance = (
     point1: { lat: lat1, lon: lon1 },
     point2: { lat: lat2, lon: lon2 }
   }: {
-    point1: { lat: number; lon: number };
-    point2: { lat: number; lon: number };
+    point1: Point;
+    point2: Point;
   },
   unit?: DistanceUnit
 ) => {

@@ -10,7 +10,7 @@
     "ts-build": "tsc",
     "clean": "rm -rf dist",
     "copy-files": "cp -r ./server/views/ ./dist/server && cp -r ./public dist",
-    "pretty": "prettier --write {server,public}/**/**.ts",
+    "pretty": "prettier --write ./server/**/**.ts",
     "lint": "eslint '{public,server}/**/*.ts'"
   },
   "dependencies": {
@@ -30,7 +30,6 @@
     "tsx": "^4.7.2"
   },
   "devDependencies": {
-    "@tylerjlawson/prettier": "^1.0.12",
     "@types/cookie-parser": "^1.4.7",
     "@types/express": "^4.17.21",
     "@types/morgan": "^1.9.9",
@@ -63,6 +62,5 @@
     "hooks": {
       "pre-commit": "bun lint && pretty-quick --staged"
     }
-  },
-  "prettier": "@tylerjlawson/prettier"
+  }
 }
