@@ -1,6 +1,6 @@
-import axios from 'axios';
-import { Sport, sportsLeagueMap, SportRow } from '../../types/sports';
-import { ScheduleResponse } from '../../types/espn';
+import { type Sport, sportsLeagueMap, type SportRow } from '../../types/sports';
+import type { ScheduleResponse } from '../../types/espn';
+import { fetchData } from './fetch-data';
 
 // helper to get espn url given a team code
 const scheduleURL = (sport: Sport, team: string) =>
@@ -10,13 +10,11 @@ export const getESPN = async (
   sport: Sport,
   teamName: string,
   fullName: string
-): Promise<SportRow> => {
+): Promise<SportRow | undefined> => {
   try {
-    const espnResp = await axios.get<ScheduleResponse>(
+    const { events } = await fetchData<ScheduleResponse>(
       scheduleURL(sport, teamName)
     );
-
-    const events = espnResp.data.events;
 
     const startIndex = events.findIndex(
       event =>

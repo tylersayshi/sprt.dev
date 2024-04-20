@@ -1,5 +1,5 @@
 import fs from 'fs';
-import { AnyObject } from '../../types/general';
+import type { AnyObject } from '../../types/general';
 
 /**
  * helper to remove leading zero from string

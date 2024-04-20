@@ -1,3 +1,5 @@
+// Note: these deps were removed, so if this needs to get run again it will need to be refactored
+
 import axios from 'axios';
 import fs from 'fs';
 import { JSDOM } from 'jsdom';

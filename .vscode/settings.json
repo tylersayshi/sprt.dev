@@ -2,5 +2,14 @@
   "emojisense.unicodeCompletionsEnabled": false,
   "editor.defaultFormatter": "esbenp.prettier-vscode",
   "editor.formatOnSave": true,
-  "cSpell.words": ["bball", "datetime", "dont", "emojify", "response", "sprt"]
+  "cSpell.words": [
+    "bball",
+    "datetime",
+    "dont",
+    "Elysia",
+    "emojify",
+    "response",
+    "sprt",
+    "tseslint"
+  ]
 }

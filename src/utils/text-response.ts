@@ -1,8 +1,7 @@
-import express from 'express';
 import { table } from 'table';
 import { getESPN } from '../utils/espn';
-import { getCity } from '../utils/city';
-import { SportMap, sportNames, SportRow } from '../../types/sports';
+import { type SportMap, sportNames, type SportRow } from '../../types/sports';
+import type { CityResponse } from '../../types/general';
 
 // lookup table to hold emoji for each sport
 const emojiMap: SportMap<string> = {
@@ -12,13 +11,9 @@ const emojiMap: SportMap<string> = {
   football: '🏈'
 };
 
-const router = express.Router();
-router.get('/*', async function (req, res) {
-  const isCurl = req.headers['user-agent'].includes('curl');
-
-  const city = await getCity(req);
+export const getTextResponse = async (city: CityResponse, isCurl: boolean) => {
   const responses = await Promise.allSettled(
-    sportNames.reduce<Promise<SportRow>[]>((acc, sport) => {
+    sportNames.reduce<Promise<SportRow | undefined>[]>((acc, sport) => {
       const cityTeams = city.sports[sport];
       cityTeams.forEach(team => acc.push(getESPN(sport, team.abbr, team.name)));
       return acc;
@@ -30,7 +25,7 @@ router.get('/*', async function (req, res) {
     return acc;
   }, []);
 
-  const parsedDataForTable = dataForTable.reduce((acc, sport) => {
+  const parsedDataForTable = dataForTable.reduce<string[][]>((acc, sport) => {
     if (sport.games) {
       acc.push([
         isCurl ? `${emojiMap[sport.name]} ${sport.team}` : sport.team,
@@ -60,15 +55,6 @@ router.get('/*', async function (req, res) {
   // Testing for presence of curl in user agent
   // goal of this is to test if the request is coming from a terminal vs a browser
   // Want to return ascii text for curl requests and html for the browser
-  if (isCurl) {
-    res.send(response);
-  } else {
-    // correct spacing so that emojis line up with source code pro font
-    res.render('index', {
-      table: response,
-      location: city.name.split(',')[0]
-    });
-  }
-});
 
-export default router;
+  return response;
+};
