@@ -14,6 +14,8 @@ const emojiMap: SportMap<string> = {
 
 const router = express.Router();
 router.get('/*', async function (req, res) {
+  const isCurl = req.headers['user-agent'].includes('curl');
+
   const city = await getCity(req);
   const responses = await Promise.allSettled(
     sportNames.reduce<Promise<SportRow>[]>((acc, sport) => {
@@ -30,7 +32,7 @@ router.get('/*', async function (req, res) {
 
   const parsedDataForTable = dataForTable.reduce((acc, sport) => {
     if (sport.games) {
-      acc.push([`${emojiMap[sport.name]} ${sport.team}`, ...sport.games]);
+      acc.push([isCurl ? `${emojiMap[sport.name]} ${sport.team}` : sport.team, ...sport.games]);
     }
     return acc;
   }, []);
@@ -47,17 +49,12 @@ router.get('/*', async function (req, res) {
   // Testing for presence of curl in user agent
   // goal of this is to test if the request is coming from a terminal vs a browser
   // Want to return ascii text for curl requests and html for the browser
-  if (req.headers['user-agent'].includes('curl')) {
+  if (isCurl) {
     res.send(response);
   } else {
     // correct spacing so that emojis line up with source code pro font
-    const correctionSpace = '\u2004' + '\u2006' + '\u200A';
-    const correctedTable = Object.values(emojiMap).reduce(
-      (table, emoji) => table.replace(emoji + ' ', emoji + correctionSpace),
-      response
-    );
     res.render('index', {
-      table: correctedTable,
+      table: response,
       location: city.name.split(',')[0]
     });
   }
