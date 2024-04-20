@@ -47,10 +47,10 @@ router.get('/*', async function (req, res) {
   const response =
     `Sport schedule: ${city.name}\n\n` +
     gamesTable +
-    '\nSee this project @tylerjlawson/sprt.dev on Github for more information\n';
+    '\nSee this project @tylerlaws0n/sprt.dev on Github for more information\n';
 
   const query = new URLSearchParams({
-    p: 'ad6bdbd3-1f67-4cfe-b9f7-30e63c996615',
+    p: '48924da0-e9a3-4784-9897-3e7f50ab08af',
     i: '1'
   });
 
