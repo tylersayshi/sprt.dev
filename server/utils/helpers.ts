@@ -39,10 +39,13 @@ type DistanceUnit = 'K' | 'N';
  * @see https://www.geodatasource.com/developers/javascript
  */
 export const distance = (
-  lat1: number,
-  lon1: number,
-  lat2: number,
-  lon2: number,
+  {
+    point1: { lat: lat1, lon: lon1 },
+    point2: { lat: lat2, lon: lon2 }
+  }: {
+    point1: { lat: number; lon: number };
+    point2: { lat: number; lon: number };
+  },
   unit?: DistanceUnit
 ) => {
   const radlat1 = (Math.PI * lat1) / 180;

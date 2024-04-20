@@ -39,7 +39,7 @@ const closeEnough = (a: number, b: number) => {
 const getClosest = (loc: GeoTeam, data: TeamWithLocation[]): CityTeam[] => {
   const closest = data.reduce(
     (mins, team) => {
-      const d = distance(loc.lat, loc.lon, team.lat, team.lon);
+      const d = distance({ point1: loc, point2: team });
       if (d < mins[0].d) {
         return [
           {
