@@ -32,7 +32,10 @@ router.get('/*', async function (req, res) {
 
   const parsedDataForTable = dataForTable.reduce((acc, sport) => {
     if (sport.games) {
-      acc.push([isCurl ? `${emojiMap[sport.name]} ${sport.team}` : sport.team, ...sport.games]);
+      acc.push([
+        isCurl ? `${emojiMap[sport.name]} ${sport.team}` : sport.team,
+        ...sport.games
+      ]);
     }
     return acc;
   }, []);
@@ -45,6 +48,14 @@ router.get('/*', async function (req, res) {
     `Sport schedule: ${city.name}\n\n` +
     gamesTable +
     '\nSee this project @tylerjlawson/sprt.dev on Github for more information\n';
+
+  const query = new URLSearchParams({
+    p: 'ad6bdbd3-1f67-4cfe-b9f7-30e63c996615',
+    i: '1'
+  });
+
+  // piratepx.com API to track requests
+  fetch(`https://app.piratepx.com/ship?${query.toString()}`);
 
   // Testing for presence of curl in user agent
   // goal of this is to test if the request is coming from a terminal vs a browser
