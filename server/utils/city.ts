@@ -92,6 +92,7 @@ export const getCity = async (req: Request): Promise<CityResponse> => {
     if (req.baseUrl === '') {
       // remove ipv4 prefix
       let ip = req.headers['x-forwarded-for'] || req.ip.replace('::ffff:', '');
+      console.log(ip);
       if (ip === '127.0.0.1' || ip === '::1') {
         // lookup local public ip in development since express says localhost
         const { data } = await axios.get<string>(
