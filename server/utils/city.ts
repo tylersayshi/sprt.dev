@@ -86,6 +86,8 @@ const getByAbbreviation = (
   ];
 };
 
+const GOOGLE_CACHE = new Map<string, GeoTeam>();
+
 export const getCity = async (req: Request): Promise<CityResponse> => {
   let geo: GeoTeam;
   try {
@@ -129,23 +131,28 @@ export const getCity = async (req: Request): Promise<CityResponse> => {
         throw Error;
       }
     } else {
-      const search = req.baseUrl.substr(1);
-      const googRes = await axios.get<GoogleResponse>(
-        `https://maps.googleapis.com/maps/api/geocode/json?address=${search}&components=short_name:CA|short_name:US&region=us&key=${process.env.GOOGLE_API_KEY}`
-      );
-      const googSearchResults = googRes.data.results;
-      if (googSearchResults.length) {
-        const res = googSearchResults[0];
-        geo = {
-          name: res.formatted_address,
-          city: res.address_components.reduce(
-            (acc, comp) =>
-              comp.types.includes('locality') ? comp.long_name : acc,
-            ''
-          ),
-          lat: res.geometry.location.lat,
-          lon: res.geometry.location.lng
-        };
+      const search = req.baseUrl.substring(1);
+      if (GOOGLE_CACHE.has(search)) {
+        geo = GOOGLE_CACHE.get(search);
+      } else {
+        const googRes = await axios.get<GoogleResponse>(
+          `https://maps.googleapis.com/maps/api/geocode/json?address=${search}&components=short_name:CA|short_name:US&region=us&key=${process.env.GOOGLE_API_KEY}`
+        );
+        const googSearchResults = googRes.data.results;
+        if (googSearchResults.length) {
+          const res = googSearchResults[0];
+          geo = {
+            name: res.formatted_address,
+            city: res.address_components.reduce(
+              (acc, comp) =>
+                comp.types.includes('locality') ? comp.long_name : acc,
+              ''
+            ),
+            lat: res.geometry.location.lat,
+            lon: res.geometry.location.lng
+          };
+          GOOGLE_CACHE.set(search, geo);
+        }
       }
     }
   } catch {
