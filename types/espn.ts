@@ -203,7 +203,7 @@ export interface Competition {
   ticketsAvailable: boolean;
   venue: Venue;
   competitors: Competitor[];
-  notes: any[];
+  notes: unknown[];
   broadcasts: Broadcast[];
   status: Status;
   tickets: Ticket[];

@@ -62,7 +62,7 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": "yarn lint && pretty-quick --staged"
+      "pre-commit": "bun lint && pretty-quick --staged"
     }
   },
   "prettier": "@tylerjlawson/prettier"
