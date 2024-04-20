@@ -5,6 +5,7 @@
   "scripts": {
     "start": "bun run ./src/index.ts",
     "dev": "bun run ./src/index.ts --watch",
+    "check": "tsc",
     "pretty": "prettier --write ./src/**/*.{ts,tsx}",
     "lint": "eslint './src/**/*.ts'"
   },
