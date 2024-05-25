@@ -97,6 +97,8 @@ export const getCityByIp = async (
     // remove ipv4 prefix
     ipAddress.replace('::ffff:', '');
 
+    console.log(ip, ipAddress);
+
     const geoResponse = await fetchData<GeoSearchResponse>(
       'https://tools.keycdn.com/geo.json?host=' + ip,
       {
