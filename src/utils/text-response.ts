@@ -11,11 +11,25 @@ const emojiMap: SportMap<string> = {
   football: '🏈'
 };
 
-export const getTextResponse = async (city: CityResponse, isCurl: boolean) => {
+export const getTextResponse = async (
+  city: CityResponse,
+  isCurl: boolean,
+  locale: string
+) => {
   const responses = await Promise.allSettled(
     sportNames.reduce<Promise<SportRow | undefined>[]>((acc, sport) => {
       const cityTeams = city.sports[sport];
-      cityTeams.forEach(team => acc.push(getESPN(sport, team.abbr, team.name)));
+      cityTeams.forEach(team =>
+        acc.push(
+          getESPN({
+            sport,
+            teamName: team.abbr,
+            fullName: team.name,
+            timezone: city.timezone,
+            locale
+          })
+        )
+      );
       return acc;
     }, [])
   );

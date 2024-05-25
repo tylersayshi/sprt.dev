@@ -85,45 +85,44 @@ const closeEnough = (a: number, b: number) => {
   return diff < 25;
 };
 
-export const getClosest = (
-  loc: GeoTeam,
-  data: TeamWithLocation[]
-): CityTeam[] => {
-  const closest = data.reduce(
-    (mins, team) => {
-      const d = distance({ point1: loc, point2: team });
-      if (d < mins[0].d) {
-        return [
-          {
+export const getClosest =
+  (loc: GeoTeam) =>
+  (data: TeamWithLocation[]): CityTeam[] => {
+    const closest = data.reduce(
+      (mins, team) => {
+        const d = distance({ point1: loc, point2: team });
+        if (d < mins[0].d) {
+          return [
+            {
+              abbr: team.abbr,
+              name: team.name,
+              d
+            }
+          ];
+        } else if (closeEnough(d, mins[0].d)) {
+          mins.push({
             abbr: team.abbr,
             name: team.name,
             d
-          }
-        ];
-      } else if (closeEnough(d, mins[0].d)) {
-        mins.push({
-          abbr: team.abbr,
-          name: team.name,
-          d
-        });
-        return mins;
-      } else {
-        return mins;
-      }
-    },
-    [
-      {
-        abbr: data[0].abbr,
-        name: data[0].name,
-        d: Infinity
-      }
-    ]
-  );
-  return closest.map(city => ({
-    abbr: city.abbr,
-    name: city.name
-  }));
-};
+          });
+          return mins;
+        } else {
+          return mins;
+        }
+      },
+      [
+        {
+          abbr: data[0].abbr,
+          name: data[0].name,
+          d: Infinity
+        }
+      ]
+    );
+    return closest.map(city => ({
+      abbr: city.abbr,
+      name: city.name
+    }));
+  };
 
 export const getByAbbreviation = (
   abbr: string,
@@ -146,5 +145,6 @@ export const DEFAULT_CITY_RES: CityResponse = {
     basketball: getByAbbreviation('bos', basketball),
     football: getByAbbreviation('ne', football),
     hockey: getByAbbreviation('bos', hockey)
-  }
+  },
+  timezone: 'America/New_York'
 };

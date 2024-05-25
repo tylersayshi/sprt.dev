@@ -20,7 +20,8 @@ const REDIS_CLIENT = process.env['REDIS_URL']
   : null;
 
 export const getCityBySearch = async (
-  search: string
+  search: string,
+  timezone: string | undefined
 ): Promise<CityResponse> => {
   let geo: GeoTeam | undefined;
   try {
@@ -54,15 +55,20 @@ export const getCityBySearch = async (
     // no-op
   }
 
-  return geo
-    ? {
-        name: geo.name,
-        sports: {
-          baseball: getClosest(geo, baseball),
-          basketball: getClosest(geo, basketball),
-          football: getClosest(geo, football),
-          hockey: getClosest(geo, hockey)
-        }
-      }
-    : DEFAULT_CITY_RES;
+  if (!geo) {
+    return DEFAULT_CITY_RES;
+  }
+
+  const getClosestFn = getClosest(geo);
+
+  return {
+    name: geo.name,
+    sports: {
+      baseball: getClosestFn(baseball),
+      basketball: getClosestFn(basketball),
+      football: getClosestFn(football),
+      hockey: getClosestFn(hockey)
+    },
+    timezone: timezone ?? DEFAULT_CITY_RES.timezone
+  };
 };

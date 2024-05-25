@@ -6,7 +6,8 @@ import staticPlugin from '@elysiajs/static';
 import { getCityBySearch } from './utils/google-city';
 import { getTextResponse } from './utils/text-response';
 import { responseView } from './utils/view-response';
-import { getCityByIp } from './utils/ip-city';
+import { getCitySportsFromGeo } from './utils/ip-city';
+import { getIpCity } from './utils/get-ip-city';
 
 const app = new Elysia()
   .use(
@@ -21,21 +22,18 @@ const app = new Elysia()
   .use(app =>
     // provide isCurl to each endpoint handler
     app.derive({ as: 'global' }, ({ request }) => ({
+      ip:
+        request.headers.get('x-forwarded-for') ??
+        request.headers.get('x-envoy-external-address'),
+      locale: request.headers.get('accept-language')?.split(',')[0] ?? 'en-US',
+      // provide isCurl to each endpoint handler
       isCurl: !!request.headers.get('user-agent')?.includes('curl')
     }))
   )
-  .use(app =>
-    // provide isCurl to each endpoint handler
-    app.derive({ as: 'global' }, ({ request }) => ({
-      ip:
-        request.headers.get('x-forwarded-for') ??
-        request.headers.get('x-envoy-external-address')
-    }))
-  )
-  .get('/', async ({ isCurl, ip }) => {
-    console.log('Search for ip:', ip);
-    const city = await getCityByIp(ip);
-    const textResponse = await getTextResponse(city, isCurl);
+  .get('/', async ({ isCurl, ip, locale }) => {
+    const cityGeo = await getIpCity(ip);
+    const city = await getCitySportsFromGeo(cityGeo);
+    const textResponse = await getTextResponse(city, isCurl, locale);
     if (isCurl) return textResponse;
     return responseView(textResponse, city.name);
   })
@@ -47,10 +45,11 @@ const app = new Elysia()
       }
     });
   })
-  .get('/:query', async ({ params, isCurl }) => {
+  .get('/:query', async ({ params, isCurl, ip, locale }) => {
     console.log('Search for city:', params.query);
-    const city = await getCityBySearch(params.query);
-    const textResponse = await getTextResponse(city, isCurl);
+    const cityGeo = await getIpCity(ip);
+    const city = await getCityBySearch(params.query, cityGeo?.timezone);
+    const textResponse = await getTextResponse(city, isCurl, locale);
     if (isCurl) return textResponse;
     return responseView(textResponse, city.name);
   })

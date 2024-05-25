@@ -22,4 +22,9 @@ export interface CityResponse {
    * map of all sports returned for a given city
    */
   sports: SportMap<CityTeam[]>;
+  /**
+   * Timezone of the city
+   * @example "America/New_York"
+   */
+  timezone: string;
 }
