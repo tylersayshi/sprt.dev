@@ -23,6 +23,7 @@ const app = new Elysia()
     }))
   )
   .get('/', async ({ isCurl, ip }) => {
+    console.log('Search for ip:', ip);
     const city = await getCityByIp(ip);
     const textResponse = await getTextResponse(city, isCurl);
     if (isCurl) return textResponse;
