@@ -84,7 +84,6 @@ export const getCityByIp = async (
   }
 
   try {
-    // remove ipv4 prefix
     const ipAddress = typeof ip === 'string' ? ip : ip.address;
 
     if (ipAddress === '127.0.0.1' || ipAddress === '::1') {
@@ -95,6 +94,7 @@ export const getCityByIp = async (
       ip = data.ip;
     }
 
+    // remove ipv4 prefix
     ipAddress.replace('::ffff:', '');
 
     const geoResponse = await fetchData<GeoSearchResponse>(
