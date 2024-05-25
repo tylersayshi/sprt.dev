@@ -103,6 +103,8 @@ export const getCityByIp = async (
       }
     );
 
+    console.log({ ipAddress, geoResponse });
+
     if (geoResponse) {
       const apiGeo = geoResponse.data.geo;
       if (apiGeo.city) {
