@@ -10,11 +10,12 @@ import { getClosest, DEFAULT_CITY_RES } from './helpers';
 
 import { createClient } from 'redis';
 
-const REDIS_CLIENT = process.env['REDIS_PRIVATE_URL']
+const REDIS_CLIENT = process.env['REDIS_URL']
   ? await createClient({
-      url: process.env['REDIS_PRIVATE_URL']
+      url: process.env['REDIS_URL'],
+      password: process.env['REDIS_PASSWORD']
     })
-      .on('error', err => console.log('Redis Client Error', err))
+      .on('error', err => console.log('Redis Client Error\n', err))
       .connect()
   : null;
 
