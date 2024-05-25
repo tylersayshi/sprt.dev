@@ -27,6 +27,7 @@ export const getCityBySearch = async (
     const redisEntry = await REDIS_CLIENT?.get(search);
     if (redisEntry) {
       geo = JSON.parse(redisEntry) as GeoTeam;
+      console.log('Cache hit! 🥳', geo.city);
     } else {
       const googRes = await fetchData<GoogleResponse>(
         `https://maps.googleapis.com/maps/api/geocode/json?address=${search}&components=short_name:CA|short_name:US&region=us&key=${process.env['GOOGLE_API_KEY']}`
