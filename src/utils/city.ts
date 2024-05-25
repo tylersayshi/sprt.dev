@@ -86,6 +86,7 @@ export const getCityByIp = async (
   try {
     // remove ipv4 prefix
     const ipAddress = typeof ip === 'string' ? ip : ip.address;
+    console.log({ ipAddress });
 
     if (ipAddress === '127.0.0.1' || ipAddress === '::1') {
       // lookup local public ip in development since express says localhost
@@ -101,6 +102,8 @@ export const getCityByIp = async (
         headers: { 'user-agent': 'keycdn-tools:https://sprt.dev' }
       }
     );
+
+    console.log({ geoResponse });
 
     if (geoResponse) {
       const apiGeo = geoResponse.data.geo;
