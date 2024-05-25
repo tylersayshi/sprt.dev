@@ -30,6 +30,14 @@ const app = new Elysia()
     if (isCurl) return textResponse;
     return responseView(textResponse, city.name);
   })
+  .get('/favicon.ico', async () => {
+    const file = Bun.file('public/images/favicon/favicon.ico');
+    return new Response(file, {
+      headers: {
+        'Content-Type': 'image/x-icon'
+      }
+    });
+  })
   .get('/:query', async ({ params, isCurl }) => {
     console.log('Search for city:', params.query);
     const city = await getCityBySearch(params.query);
