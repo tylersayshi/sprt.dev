@@ -84,23 +84,20 @@ export const getCityByIp = async (
   }
 
   try {
-    const ipAddress = typeof ip === 'string' ? ip : ip.address;
+    // remove ipv4 prefix
+    let ipAddress =
+      typeof ip === 'string' ? ip : ip.address.replace('::ffff:', '');
 
     if (ipAddress === '127.0.0.1' || ipAddress === '::1') {
       // lookup local public ip in development since express says localhost
       const data = await fetchData<{ ip: string }>(
         'https://api64.ipify.org?format=json'
       );
-      ip = data.ip;
+      ipAddress = data.ip;
     }
 
-    // remove ipv4 prefix
-    ipAddress.replace('::ffff:', '');
-
-    console.log(ip, ipAddress);
-
     const geoResponse = await fetchData<GeoSearchResponse>(
-      'https://tools.keycdn.com/geo.json?host=' + ip,
+      'https://tools.keycdn.com/geo.json?host=' + ipAddress,
       {
         headers: { 'user-agent': 'keycdn-tools:https://sprt.dev' }
       }
