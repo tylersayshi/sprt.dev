@@ -1,9 +1,10 @@
 import { Elysia } from 'elysia';
-import { getCityByIp, getCityBySearch } from './utils/city';
+import { getCityBySearch } from './utils/google-city';
 import { getTextResponse } from './utils/text-response';
 import { html } from '@elysiajs/html';
 import { responseView } from './utils/view-response';
 import staticPlugin from '@elysiajs/static';
+import { getCityByIp } from './utils/ip-city';
 
 const app = new Elysia()
   .use(staticPlugin())
