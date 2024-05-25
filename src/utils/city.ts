@@ -75,13 +75,24 @@ const DEFAULT_CITY_RES: CityResponse = {
   }
 };
 
-export const getCityByIp = async (): Promise<CityResponse> => {
+export const getCityByIp = async (
+  ip: string | null | undefined
+): Promise<CityResponse> => {
+  if (!ip) {
+    return DEFAULT_CITY_RES;
+  }
+
   try {
-    // lookup local public ip in development since express says localhost
-    const data = await fetchData<{ ip: string }>(
-      'https://api64.ipify.org?format=json'
-    );
-    const ipAddress = data.ip;
+    // remove ipv4 prefix
+    let ipAddress = ip;
+
+    if (ipAddress === '127.0.0.1' || ipAddress === '::1') {
+      // lookup local public ip in development since express says localhost
+      const data = await fetchData<{ ip: string }>(
+        'https://api64.ipify.org?format=json'
+      );
+      ipAddress = data.ip;
+    }
 
     const geoResponse = await fetchData<GeoSearchResponse>(
       'https://tools.keycdn.com/geo.json?host=' + ipAddress,

@@ -14,9 +14,16 @@ const app = new Elysia()
       isCurl: !!request.headers.get('user-agent')?.includes('curl')
     }))
   )
-  .get('/', async ({ isCurl, request }) => {
-    console.log(request.headers);
-    const city = await getCityByIp();
+  .use(app =>
+    // provide isCurl to each endpoint handler
+    app.derive({ as: 'global' }, ({ request }) => ({
+      ip:
+        request.headers.get('x-forwarded-for') ??
+        request.headers.get('x-envoy-external-address')
+    }))
+  )
+  .get('/', async ({ isCurl, ip }) => {
+    const city = await getCityByIp(ip);
     const textResponse = await getTextResponse(city, isCurl);
     if (isCurl) return textResponse;
     return responseView(textResponse, city.name);
