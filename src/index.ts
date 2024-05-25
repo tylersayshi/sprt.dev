@@ -14,7 +14,8 @@ const app = new Elysia()
       isCurl: !!request.headers.get('user-agent')?.includes('curl')
     }))
   )
-  .get('/', async ({ isCurl }) => {
+  .get('/', async ({ isCurl, request }) => {
+    console.log(request.headers);
     const city = await getCityByIp();
     const textResponse = await getTextResponse(city, isCurl);
     if (isCurl) return textResponse;
