@@ -42,7 +42,6 @@ export const getESPN = async ({
       const title = game.shortName;
       const competition = game.competitions[0];
       let status = competition.status.type.shortDetail;
-      // TODO status can include time, when it does, normalize for timezone
 
       if (status.includes('AM') || status.includes('PM')) {
         const splitStatus = status.split(' - ');
@@ -65,6 +64,7 @@ export const getESPN = async ({
 
         const tzDate = date.withTimeZone(timezone);
 
+        // hh:mm AM/PM (timezone)
         const timeString = tzDate.toLocaleString(locale, {
           hour12: true,
           hour: 'numeric',
@@ -72,6 +72,7 @@ export const getESPN = async ({
           timeZoneName: 'short'
         });
 
+        // mm/dd or dd/mm depending on locale
         const dateString = tzDate.toLocaleString(locale, {
           month: 'numeric',
           day: 'numeric'
