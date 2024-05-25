@@ -7,7 +7,7 @@ This project aims to provide you with the upcoming games near your location with
 Run
 
 ```
-curl sprt.dev
+curl https://sprt.dev
 ```
 
 [Or visit the site here](https://sprt.dev)
