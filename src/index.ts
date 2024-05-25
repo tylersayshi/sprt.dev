@@ -1,12 +1,21 @@
 import { Elysia } from 'elysia';
+import { html } from '@elysiajs/html';
+import { rateLimit } from 'elysia-rate-limit';
+import staticPlugin from '@elysiajs/static';
+
 import { getCityBySearch } from './utils/google-city';
 import { getTextResponse } from './utils/text-response';
-import { html } from '@elysiajs/html';
 import { responseView } from './utils/view-response';
-import staticPlugin from '@elysiajs/static';
 import { getCityByIp } from './utils/ip-city';
 
 const app = new Elysia()
+  .use(
+    rateLimit({
+      duration: 1000 * 60 * 60, // 1 hour
+      errorResponse: 'Easy big Fella - Too Many Requests',
+      max: 50 // 50 requests per hour
+    })
+  )
   .use(staticPlugin())
   .use(html())
   .use(app =>
