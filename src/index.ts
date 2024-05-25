@@ -1,6 +1,5 @@
 import { Elysia } from 'elysia';
 import { getCityByIp, getCityBySearch } from './utils/city';
-import { ip } from 'elysia-ip';
 import { getTextResponse } from './utils/text-response';
 import { html } from '@elysiajs/html';
 import { responseView } from './utils/view-response';
@@ -8,7 +7,6 @@ import staticPlugin from '@elysiajs/static';
 
 const app = new Elysia()
   .use(staticPlugin())
-  .use(ip())
   .use(html())
   .use(app =>
     // provide isCurl to each endpoint handler

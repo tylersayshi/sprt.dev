@@ -6,7 +6,6 @@ import { distance } from './helpers';
 import type { GeoTeam, TeamWithLocation } from '../../types/sports';
 import type { GeoSearchResponse } from '../../types/geoSearch';
 import type { GoogleResponse } from '../../types/google';
-import type { SocketAddress } from 'bun';
 import type { CityResponse, CityTeam } from '../../types/general';
 import { fetchData } from './fetch-data';
 
@@ -76,26 +75,13 @@ const DEFAULT_CITY_RES: CityResponse = {
   }
 };
 
-export const getCityByIp = async (
-  ip: string | SocketAddress | null | undefined
-): Promise<CityResponse> => {
-  if (!ip) {
-    return DEFAULT_CITY_RES;
-  }
-
+export const getCityByIp = async (): Promise<CityResponse> => {
   try {
-    // remove ipv4 prefix
-    console.log('full ip', ip);
-    let ipAddress =
-      typeof ip === 'string' ? ip : ip.address.replace('::ffff:', '');
-
-    if (ipAddress === '127.0.0.1' || ipAddress === '::1') {
-      // lookup local public ip in development since express says localhost
-      const data = await fetchData<{ ip: string }>(
-        'https://api64.ipify.org?format=json'
-      );
-      ipAddress = data.ip;
-    }
+    // lookup local public ip in development since express says localhost
+    const data = await fetchData<{ ip: string }>(
+      'https://api64.ipify.org?format=json'
+    );
+    const ipAddress = data.ip;
 
     const geoResponse = await fetchData<GeoSearchResponse>(
       'https://tools.keycdn.com/geo.json?host=' + ipAddress,
