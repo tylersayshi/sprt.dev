@@ -85,6 +85,7 @@ export const getCityByIp = async (
 
   try {
     // remove ipv4 prefix
+    console.log('full ip', ip);
     let ipAddress =
       typeof ip === 'string' ? ip : ip.address.replace('::ffff:', '');
 
