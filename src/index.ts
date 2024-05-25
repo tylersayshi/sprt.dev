@@ -29,6 +29,7 @@ const app = new Elysia()
     return responseView(textResponse, city.name);
   })
   .get('/:query', async ({ params, isCurl }) => {
+    console.log('Search for city:', params.query);
     const city = await getCityBySearch(params.query);
     const textResponse = await getTextResponse(city, isCurl);
     if (isCurl) return textResponse;
