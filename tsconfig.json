@@ -123,6 +123,10 @@
     "noPropertyAccessFromIndexSignature": true,
 
     // ADDED
-    "noErrorTruncation": true
+    "noErrorTruncation": true,
+    "paths": {
+      "schema": ["./schema/index.ts"],
+      "db": ["./src/db/index.ts"]
+    }
   }
 }

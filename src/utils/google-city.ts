@@ -1,7 +1,3 @@
-import { basketball } from '../data/basketball';
-import { football } from '../data/football';
-import { baseball } from '../data/baseball';
-import { hockey } from '../data/hockey';
 import type { GeoTeam } from '../../types/sports';
 import type { GoogleResponse } from '../../types/google';
 import type { CityResponse } from '../../types/general';
