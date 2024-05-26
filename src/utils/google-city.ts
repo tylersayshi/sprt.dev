@@ -1,12 +1,8 @@
-import { basketball } from '../data/basketball';
-import { football } from '../data/football';
-import { baseball } from '../data/baseball';
-import { hockey } from '../data/hockey';
 import type { GeoTeam } from '../../types/sports';
 import type { GoogleResponse } from '../../types/google';
 import type { CityResponse } from '../../types/general';
 import { fetchData } from './fetch-data';
-import { getClosest, DEFAULT_CITY_RES } from './helpers';
+import { getClosest, DEFAULT_CITY_RES } from 'db';
 
 import { createClient } from 'redis';
 
@@ -64,11 +60,11 @@ export const getCityBySearch = async (
   return {
     name: geo.name,
     sports: {
-      baseball: getClosestFn(baseball),
-      basketball: getClosestFn(basketball),
-      football: getClosestFn(football),
-      hockey: getClosestFn(hockey)
+      baseball: await getClosestFn('baseball'),
+      basketball: await getClosestFn('basketball'),
+      football: await getClosestFn('football'),
+      hockey: await getClosestFn('hockey')
     },
-    timezone: timezone ?? DEFAULT_CITY_RES.timezone
+    timezone: timezone ?? (await DEFAULT_CITY_RES).timezone
   };
 };
