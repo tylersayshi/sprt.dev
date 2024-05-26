@@ -6,6 +6,8 @@ import { getClosest, DEFAULT_CITY_RES } from 'db';
 
 import { createClient } from 'redis';
 
+const NO_RESULTS = 'no-results';
+
 const REDIS_CLIENT = process.env['REDIS_URL']
   ? await createClient({
       url: process.env['REDIS_URL'],
@@ -23,6 +25,8 @@ export const getCityBySearch = async (
   try {
     const redisEntry = await REDIS_CLIENT?.get(search);
     if (redisEntry) {
+      if (redisEntry === NO_RESULTS) return DEFAULT_CITY_RES;
+
       geo = JSON.parse(redisEntry) as GeoTeam;
       console.log('Cache hit! 🥳', geo.city);
     } else {
@@ -45,10 +49,17 @@ export const getCityBySearch = async (
 
         // set in redis - no need to block, so don't await
         void REDIS_CLIENT?.set(search, JSON.stringify(geo));
+      } else {
+        console.log('No results found for:', search);
+        // set in redis as miss - no need to block, so don't await
+        void REDIS_CLIENT?.set(search, NO_RESULTS);
       }
     }
-  } catch {
-    // no-op
+  } catch (err) {
+    console.error('Error getting geo data from google for search:', search);
+    if (err instanceof Error) {
+      console.error(err.message);
+    }
   }
 
   if (!geo) {
@@ -65,6 +76,6 @@ export const getCityBySearch = async (
       football: await getClosestFn('football'),
       hockey: await getClosestFn('hockey')
     },
-    timezone: timezone ?? (await DEFAULT_CITY_RES).timezone
+    timezone: timezone ?? DEFAULT_CITY_RES.timezone
   };
 };

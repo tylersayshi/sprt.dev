@@ -24,7 +24,7 @@ export const getCitySportsFromGeo = async (
           football: await getClosestFn('football'),
           hockey: await getClosestFn('hockey')
         },
-        timezone: apiGeo.timezone ?? (await DEFAULT_CITY_RES).timezone
+        timezone: apiGeo.timezone ?? DEFAULT_CITY_RES.timezone
       };
     }
   } catch (err) {
