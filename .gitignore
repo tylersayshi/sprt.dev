@@ -11,3 +11,5 @@ dist
 
 # temporary json files for testing
 tmp
+
+.DS_Store

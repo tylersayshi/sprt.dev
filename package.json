@@ -2,9 +2,11 @@
   "name": "sprt.dev",
   "version": "0.1.0",
   "license": "MIT",
+  "main": "./dist.index.js",
   "scripts": {
-    "start": "bun run ./src/index.ts",
+    "start": "bun run ./dist/index.js",
     "dev": "bun run --hot ./src/index.ts",
+    "build": "bun run ./build.ts",
     "check": "tsc",
     "pretty": "prettier --write ./src/**/*.{ts,tsx}",
     "lint": "eslint './src/**/*.ts'"
