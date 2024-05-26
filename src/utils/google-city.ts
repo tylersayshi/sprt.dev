@@ -24,13 +24,10 @@ export const getCityBySearch = async (
   let geo: GeoTeam | undefined;
   try {
     const redisEntry = await REDIS_CLIENT?.get(search);
-    if (redisEntry) {
-      if (redisEntry === NO_RESULTS) {
-        console.log('Cache hit! 🥳 - No results for:', search);
-
-        return DEFAULT_CITY_RES;
-      }
-
+    if (redisEntry === NO_RESULTS) {
+      console.log('Cache hit! 🥳 - No results for:', search);
+      return DEFAULT_CITY_RES;
+    } else if (redisEntry) {
       geo = JSON.parse(redisEntry) as GeoTeam;
       console.log('Cache hit! 🥳', geo.city);
     } else {
