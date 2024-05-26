@@ -1,10 +1,6 @@
-import { basketball } from '../data/basketball';
-import { football } from '../data/football';
-import { baseball } from '../data/baseball';
-import { hockey } from '../data/hockey';
 import type { Geo } from '../../types/geoSearch';
 import type { CityResponse } from '../../types/general';
-import { DEFAULT_CITY_RES, getClosest } from './helpers';
+import { DEFAULT_CITY_RES, getClosest } from 'db';
 
 export const getCitySportsFromGeo = async (
   apiGeo: Geo | undefined
@@ -23,12 +19,12 @@ export const getCitySportsFromGeo = async (
       return {
         name: geo.name,
         sports: {
-          baseball: getClosestFn(baseball),
-          basketball: getClosestFn(basketball),
-          football: getClosestFn(football),
-          hockey: getClosestFn(hockey)
+          baseball: await getClosestFn('baseball'),
+          basketball: await getClosestFn('basketball'),
+          football: await getClosestFn('football'),
+          hockey: await getClosestFn('hockey')
         },
-        timezone: apiGeo.timezone ?? DEFAULT_CITY_RES.timezone
+        timezone: apiGeo.timezone ?? (await DEFAULT_CITY_RES).timezone
       };
     }
   } catch (err) {

@@ -1,7 +1,7 @@
 import { eq, sql } from 'drizzle-orm';
 import { teams, type TeamsInsert } from 'schema';
 import type { CityResponse, CityTeam } from '../../types/general';
-import type { GeoTeam, TeamWithLocation } from '../../types/sports';
+import type { GeoTeam } from '../../types/sports';
 import { Client } from 'pg';
 import { drizzle } from 'drizzle-orm/node-postgres';
 import * as schema from 'schema';
@@ -56,19 +56,19 @@ export const distance = (
   return dist;
 };
 
-const closeEnough = (a: number, b: number) => {
-  const diff = a - b;
-  return diff < 25;
-};
+// const closeEnough = (a: number, b: number) => {
+//   const diff = a - b;
+//   return diff < 25;
+// };
 
 export const getClosest =
   (loc: GeoTeam) =>
   async (sport: NonNullable<TeamsInsert['sport']>): Promise<CityTeam[]> => {
-    const close = db
+    const close = await db
       .select({
         abbr: teams.abbr,
         name: teams.name,
-        d: sql<number>`point(${loc.lon}, ${loc.lat}) <@>  (point(longitude, latitude)::point)`.as(
+        d: sql<number>`point(${loc.lon}, ${loc.lat}) <@>  (point(${teams.lon}, ${teams.lat})::point)`.as(
           'd'
         ),
         city: teams.city
@@ -78,47 +78,25 @@ export const getClosest =
       .orderBy(sql`d ASC`)
       .limit(5);
 
-    const closest = data.reduce(
-      (mins, team) => {
-        const d = distance({ point1: loc, point2: team });
-        if (d < mins[0].d) {
-          return [
-            {
-              abbr: team.abbr,
-              name: team.name,
-              d
-            }
-          ];
-        } else if (closeEnough(d, mins[0].d)) {
-          mins.push({
-            abbr: team.abbr,
-            name: team.name,
-            d
-          });
-          return mins;
-        } else {
-          return mins;
-        }
-      },
-      [
-        {
-          abbr: data[0].abbr,
-          name: data[0].name,
-          d: Infinity
-        }
-      ]
-    );
-    return closest.map(city => ({
-      abbr: city.abbr,
-      name: city.name
-    }));
+    if (!close.length) return [];
+
+    let result: typeof close = [close[0]];
+    let i = 1;
+    while (close[i].d - close[i - 1].d < 25 && i < close.length) {
+      result.push(close[i]);
+      i++;
+    }
+
+    return result;
   };
 
-export const getByAbbreviation = (
+export const getByAbbreviation = async (
   abbr: string,
-  data: TeamWithLocation[]
-): CityTeam[] => {
-  const foundTeam = data.find(team => team.abbr === abbr);
+  sport: NonNullable<TeamsInsert['sport']>
+): Promise<CityTeam[]> => {
+  const foundTeam = await db.query.teams.findFirst({
+    where: (teams, { eq }) => eq(teams.abbr, abbr) && eq(teams.sport, sport)
+  });
   if (!foundTeam) return [];
   return [
     {
@@ -128,13 +106,13 @@ export const getByAbbreviation = (
   ];
 };
 
-export const DEFAULT_CITY_RES: CityResponse = {
+export const DEFAULT_CITY_RES: Promise<CityResponse> = (async () => ({
   name: 'Unable to detect location - Falling back to Boston',
   sports: {
-    baseball: getByAbbreviation('bos', baseball),
-    basketball: getByAbbreviation('bos', basketball),
-    football: getByAbbreviation('ne', football),
-    hockey: getByAbbreviation('bos', hockey)
+    baseball: await getByAbbreviation('bos', 'baseball'),
+    basketball: await getByAbbreviation('bos', 'basketball'),
+    football: await getByAbbreviation('ne', 'football'),
+    hockey: await getByAbbreviation('bos', 'hockey')
   },
   timezone: 'America/New_York'
-};
+}))();

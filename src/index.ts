@@ -8,7 +8,7 @@ import { getTextResponse } from './utils/text-response';
 import { responseView } from './utils/view-response';
 import { getCitySportsFromGeo } from './utils/ip-city';
 import { getIpCity } from './utils/get-ip-city';
-import { DEFAULT_CITY_RES } from './utils/helpers';
+import { DEFAULT_CITY_RES } from 'db';
 
 const app = new Elysia()
   .use(
