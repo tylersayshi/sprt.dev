@@ -8,6 +8,7 @@ import { getTextResponse } from './utils/text-response';
 import { responseView } from './utils/view-response';
 import { getCitySportsFromGeo } from './utils/ip-city';
 import { getIpCity } from './utils/get-ip-city';
+import { DEFAULT_CITY_RES } from './utils/helpers';
 
 const app = new Elysia()
   .use(
@@ -46,9 +47,20 @@ const app = new Elysia()
     });
   })
   .get('/:query', async ({ params, isCurl, ip, locale }) => {
-    console.log('Search for city:', params.query);
+    const parsedQuery = decodeURIComponent(params.query);
+
     const cityGeo = await getIpCity(ip);
-    const city = await getCityBySearch(params.query, cityGeo?.timezone);
+
+    const city = await (async () => {
+      if (!parsedQuery.match(/^[A-Za-z\s-_]+$/)) {
+        console.log('Invalid city:', parsedQuery);
+        return DEFAULT_CITY_RES;
+      } else {
+        console.log('Search for city:', parsedQuery);
+        return getCityBySearch(params.query, cityGeo?.timezone);
+      }
+    })();
+
     const textResponse = await getTextResponse(city, isCurl, locale);
     if (isCurl) return textResponse;
     return responseView(textResponse, city.name);
