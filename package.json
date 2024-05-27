@@ -5,7 +5,7 @@
   "type": "module",
   "main": "./dist.index.js",
   "scripts": {
-    "start": "bun --smol run ./dist/index.js",
+    "start": "bun --no-deps run ./dist/index.js",
     "dev": "bun run --hot ./src/index.ts",
     "build": "bun run ./build.ts",
     "check": "tsc",
