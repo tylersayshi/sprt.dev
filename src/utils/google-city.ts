@@ -9,21 +9,20 @@ import { createClient } from 'redis';
 const NO_RESULTS = 'no-results';
 
 const REDIS_CLIENT = process.env['REDIS_URL']
-  ? await createClient({
+  ? createClient({
       url: process.env['REDIS_URL'],
       password: process.env['REDIS_PASSWORD']
-    })
-      .on('error', err => console.log('Redis Client Error\n', err))
-      .connect()
+    }).on('error', err => console.log('Redis Client Error\n', err))
   : null;
 
 export const getCityBySearch = async (
   search: string,
   timezone: string | undefined
 ): Promise<CityResponse> => {
+  const redisConnection = await REDIS_CLIENT?.connect();
   let geo: GeoTeam | undefined;
   try {
-    const redisEntry = await REDIS_CLIENT?.get(search);
+    const redisEntry = await redisConnection?.get(search);
     if (redisEntry === NO_RESULTS) {
       console.log('Cache hit! 🥳 - No results for:', search);
       return DEFAULT_CITY_RES;
@@ -49,11 +48,11 @@ export const getCityBySearch = async (
         };
 
         // set in redis - no need to block, so don't await
-        void REDIS_CLIENT?.set(search, JSON.stringify(geo));
+        void redisConnection?.set(search, JSON.stringify(geo));
       } else {
         console.log('No results found for:', search);
         // set in redis as miss - no need to block, so don't await
-        void REDIS_CLIENT?.set(search, NO_RESULTS);
+        void redisConnection?.set(search, NO_RESULTS);
       }
     }
   } catch (err) {
@@ -68,6 +67,8 @@ export const getCityBySearch = async (
   }
 
   const getClosestFn = getClosest(geo);
+
+  void redisConnection?.disconnect();
 
   return {
     name: geo.name,
