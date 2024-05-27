@@ -10,6 +10,16 @@ import { getCitySportsFromGeo } from './utils/ip-city';
 import { getIpCity } from './utils/get-ip-city';
 import { DEFAULT_CITY_RES } from 'db';
 
+import * as Sentry from '@sentry/bun';
+
+Sentry.init({
+  dsn: process.env['SENTRY_DSN'],
+  // Performance Monitoring
+  tracesSampleRate: 1.0, // Capture 100% of the transactions
+
+  tracePropagationTargets: ['localhost', /^https:\/\/sprt\.dev/]
+});
+
 const app = new Elysia()
   .use(
     rateLimit({
