@@ -4,57 +4,57 @@ import type { CityResponse } from '../../types/general';
 import { fetchData } from './fetch-data';
 import { getClosest, DEFAULT_CITY_RES } from 'db';
 
-import { createClient } from 'redis';
+// import { createClient } from 'redis';
 
-const NO_RESULTS = 'no-results';
+// const NO_RESULTS = 'no-results';
 
-const REDIS_CLIENT = process.env['REDIS_URL']
-  ? createClient({
-      url: process.env['REDIS_URL'],
-      password: process.env['REDIS_PASSWORD']
-    }).on('error', err => console.log('Redis Client Error\n', err))
-  : null;
+// const REDIS_CLIENT = process.env['REDIS_URL']
+//   ? createClient({
+//       url: process.env['REDIS_URL'],
+//       password: process.env['REDIS_PASSWORD']
+//     }).on('error', err => console.log('Redis Client Error\n', err))
+//   : null;
 
 export const getCityBySearch = async (
   search: string,
   timezone: string | undefined
 ): Promise<CityResponse> => {
-  const redisConnection = await REDIS_CLIENT?.connect();
+  // const redisConnection = await REDIS_CLIENT?.connect();
   let geo: GeoTeam | undefined;
   try {
-    const redisEntry = await redisConnection?.get(search);
-    if (redisEntry === NO_RESULTS) {
-      console.log('Cache hit! 🥳 - No results for:', search);
-      return DEFAULT_CITY_RES;
-    } else if (redisEntry) {
-      geo = JSON.parse(redisEntry) as GeoTeam;
-      console.log('Cache hit! 🥳', geo.city);
-    } else {
-      const googRes = await fetchData<GoogleResponse>(
-        `https://maps.googleapis.com/maps/api/geocode/json?address=${search}&components=short_name:CA|short_name:US&region=us&key=${process.env['GOOGLE_API_KEY']}`
-      );
-      const googSearchResults = googRes.results;
-      if (googSearchResults.length) {
-        const res = googSearchResults[0];
-        geo = {
-          name: res.formatted_address,
-          city: res.address_components.reduce(
-            (acc, comp) =>
-              comp.types.includes('locality') ? comp.long_name : acc,
-            ''
-          ),
-          lat: res.geometry.location.lat,
-          lon: res.geometry.location.lng
-        };
+    // // const redisEntry = await redisConnection?.get(search);
+    // if (redisEntry === NO_RESULTS) {
+    //   console.log('Cache hit! 🥳 - No results for:', search);
+    //   return DEFAULT_CITY_RES;
+    // } else if (redisEntry) {
+    //   geo = JSON.parse(redisEntry) as GeoTeam;
+    //   console.log('Cache hit! 🥳', geo.city);
+    // } else {
+    const googRes = await fetchData<GoogleResponse>(
+      `https://maps.googleapis.com/maps/api/geocode/json?address=${search}&components=short_name:CA|short_name:US&region=us&key=${process.env['GOOGLE_API_KEY']}`
+    );
+    const googSearchResults = googRes.results;
+    if (googSearchResults.length) {
+      const res = googSearchResults[0];
+      geo = {
+        name: res.formatted_address,
+        city: res.address_components.reduce(
+          (acc, comp) =>
+            comp.types.includes('locality') ? comp.long_name : acc,
+          ''
+        ),
+        lat: res.geometry.location.lat,
+        lon: res.geometry.location.lng
+      };
 
-        // set in redis - no need to block, so don't await
-        void redisConnection?.set(search, JSON.stringify(geo));
-      } else {
-        console.log('No results found for:', search);
-        // set in redis as miss - no need to block, so don't await
-        void redisConnection?.set(search, NO_RESULTS);
-      }
+      // set in redis - no need to block, so don't await
+      // void redisConnection?.set(search, JSON.stringify(geo));
+    } else {
+      console.log('No results found for:', search);
+      // set in redis as miss - no need to block, so don't await
+      // void redisConnection?.set(search, NO_RESULTS);
     }
+    // }
   } catch (err) {
     console.error('Error getting geo data from google for search:', search);
     if (err instanceof Error) {
@@ -68,7 +68,7 @@ export const getCityBySearch = async (
 
   const getClosestFn = getClosest(geo);
 
-  void redisConnection?.disconnect();
+  // void redisConnection?.disconnect();
 
   return {
     name: geo.name,
