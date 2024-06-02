@@ -1,34 +1,31 @@
-import { and, eq, sql } from 'drizzle-orm';
-import { teams, type TeamsInsert } from 'schema';
+import { type TeamsInsert } from 'schema';
 import type { CityResponse, CityTeam } from '../../types/general';
 import type { GeoTeam } from '../../types/sports';
-import { Client } from 'pg';
-import { drizzle } from 'drizzle-orm/node-postgres';
-import * as schema from 'schema';
 
-const client = new Client({
-  connectionString: process.env['DATABASE_URL']
-});
+// const client = new Client({
+//   connectionString: process.env['DATABASE_URL']
+// });
 
-await client.connect();
-const db = drizzle(client, { schema });
+// await client.connect();
+// const db = drizzle(client, { schema });
 
 export const getClosest =
-  (loc: GeoTeam) =>
-  async (sport: NonNullable<TeamsInsert['sport']>): Promise<CityTeam[]> => {
-    const close = await db
-      .select({
-        abbr: teams.abbr,
-        name: teams.name,
-        d: sql<number>`point(${loc.lon}, ${loc.lat}) <@>  (point(${teams.lon}, ${teams.lat})::point)`.as(
-          'd'
-        ),
-        city: teams.city
-      })
-      .from(teams)
-      .where(eq(teams.sport, sport))
-      .orderBy(sql`d ASC`)
-      .limit(5);
+  (_loc: GeoTeam) =>
+  async (_sport: NonNullable<TeamsInsert['sport']>): Promise<CityTeam[]> => {
+    // const close = await db
+    //   .select({
+    //     abbr: teams.abbr,
+    //     name: teams.name,
+    //     d: sql<number>`point(${loc.lon}, ${loc.lat}) <@>  (point(${teams.lon}, ${teams.lat})::point)`.as(
+    //       'd'
+    //     ),
+    //     city: teams.city
+    //   })
+    //   .from(teams)
+    //   .where(eq(teams.sport, sport))
+    //   .orderBy(sql`d ASC`)
+    //   .limit(5);
+    const close = [] as any[];
 
     if (!close.length) return [];
 
@@ -43,14 +40,15 @@ export const getClosest =
   };
 
 export const getByAbbreviation = async (
-  abbr: string,
-  sport: NonNullable<TeamsInsert['sport']>
+  _abbr: string,
+  _sport: NonNullable<TeamsInsert['sport']>
 ): Promise<CityTeam[]> => {
-  const [foundTeam] = await db
-    .select({ name: teams.name, abbr: teams.abbr })
-    .from(teams)
-    .where(and(eq(teams.abbr, abbr), eq(teams.sport, sport)))
-    .limit(1);
+  // const [foundTeam] = await db
+  //   .select({ name: teams.name, abbr: teams.abbr })
+  //   .from(teams)
+  //   .where(and(eq(teams.abbr, abbr), eq(teams.sport, sport)))
+  //   .limit(1);
+  const foundTeam = undefined;
 
   if (!foundTeam) return [];
   return [foundTeam];

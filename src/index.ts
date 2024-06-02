@@ -34,10 +34,27 @@ const app = new Elysia()
       ip:
         request.headers.get('x-forwarded-for') ??
         request.headers.get('x-envoy-external-address'),
-      locale: request.headers.get('accept-language')?.split(',')[0] ?? 'en-US',
       // provide isCurl to each endpoint handler
       isCurl: !!request.headers.get('user-agent')?.includes('curl')
     }))
+  )
+  .use(app =>
+    // provide isCurl to each endpoint handler
+    app.derive({ as: 'global' }, ({ request }) => {
+      const fromHeader = request.headers.get('accept-language')?.split(',')[0];
+
+      const locale =
+        fromHeader &&
+        /^[A-Za-z]{2,4}([_-][A-Za-z]{4})?([_-]([A-Za-z]{2}|[0-9]{3}))?$/.test(
+          fromHeader
+        )
+          ? fromHeader
+          : 'en';
+
+      return {
+        locale
+      };
+    })
   )
   .get('/', async ({ isCurl, ip, locale }) => {
     const cityGeo = await getIpCity(ip);
