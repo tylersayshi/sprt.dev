@@ -1,6 +1,10 @@
 import { type TeamsInsert } from 'schema';
 import type { CityResponse, CityTeam } from '../../types/general';
 import type { GeoTeam } from '../../types/sports';
+// import { Client } from 'pg';
+
+// Test without redis and without postgres next
+// Then test empty bun server
 
 // const client = new Client({
 //   connectionString: process.env['DATABASE_URL']
