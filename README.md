@@ -1,5 +1,7 @@
 # sprt.dev :basketball: :baseball: :ice_hockey: :football:
 
+## NOTE: This service is currently down... Working on getting it hosted somewhere new :)
+
 This project aims to provide you with the upcoming games near your location without ever needing to leave your terminal.
 
 ## Usage Instructions
