@@ -26,4 +26,4 @@ go.work
 .env
 .env.local
 
-database.db
+*.db

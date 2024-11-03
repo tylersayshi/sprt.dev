@@ -65,7 +65,9 @@ type Server struct {
 
 type GoogleHistory struct {
 	Search string
-	Result string
+	City   string
+	Lat    float64
+	Lon    float64
 }
 
 type Team struct {
@@ -104,7 +106,7 @@ func ConnectDatabase(dbPath string) (*sql.DB, error) {
 
 // GetGoogleHistory retrieves all entries from the `google_history` table.
 func GetGoogleHistory(db *sql.DB, search string) ([]GoogleHistory, error) {
-	rows, err := db.Query("SELECT result FROM google_history where search = ?", search)
+	rows, err := db.Query("SELECT city, lat, lon FROM google_history where search = ?", search)
 	if err != nil {
 		return nil, err
 	}
@@ -113,7 +115,7 @@ func GetGoogleHistory(db *sql.DB, search string) ([]GoogleHistory, error) {
 	var history []GoogleHistory
 	for rows.Next() {
 		var item GoogleHistory
-		if err := rows.Scan(&item.Search, &item.Result); err != nil {
+		if err := rows.Scan(&item.City, &item.Lat, &item.Lon); err != nil {
 			return nil, err
 		}
 		history = append(history, item)
@@ -260,7 +262,7 @@ func main() {
 		rateLimiter: NewRateLimiter(),
 	}
 
-	db, err := ConnectDatabase("database.db")
+	db, err := ConnectDatabase("sprt-dev.db")
 	if err != nil {
 		log.Fatalf("Failed to connect to database: %v", err)
 	}
@@ -431,9 +433,7 @@ func getCitySportsFromGeo(db *sql.DB, cityGeo *Geo, locale string) (CityResponse
 					sports[sport] = append(sports[sport], sportRow)
 				}
 			}
-
 		}
-
 	}
 
 	return CityResponse{
@@ -528,62 +528,77 @@ func responseView(text string, cityName string) string {
 func getCityBySearch(db *sql.DB, search string, timezone string, locale string) (CityResponse, error) {
 	history, err := GetGoogleHistory(db, search)
 	if err != nil {
+		fmt.Printf("Error getting google history: %v", err)
 		return CityResponse{}, fmt.Errorf("error getting google history: %v", err)
 	}
-	if len(history) > 0 {
-		return CityResponse{
-			Name:     history[0].Result,
-			Sports:   make(map[Sport][]*SportRow),
-			Timezone: timezone,
-		}, nil
-	}
-
 	var geo *Geo
-	resp, err := fetchData(fmt.Sprintf(
-		"https://maps.googleapis.com/maps/api/geocode/json?address=%s&components=short_name:CA|short_name:US&region=us&key=%s",
-		url.QueryEscape(search), os.Getenv("GOOGLE_API_KEY"),
-	))
-	if err != nil {
-		return CityResponse{}, fmt.Errorf("error fetching data from Google: %v", err)
-	}
-	defer resp.Body.Close()
-
-	var googRes struct {
-		Results []struct {
-			FormattedAddress  string `json:"formatted_address"`
-			AddressComponents []struct {
-				LongName string   `json:"long_name"`
-				Types    []string `json:"types"`
-			} `json:"address_components"`
-			Geometry struct {
-				Location struct {
-					Lat float64 `json:"lat"`
-					Lng float64 `json:"lng"`
-				} `json:"location"`
-			} `json:"geometry"`
-		} `json:"results"`
-	}
-	if err := json.NewDecoder(resp.Body).Decode(&googRes); err != nil {
-		return CityResponse{}, fmt.Errorf("error decoding JSON response: %v", err)
-	}
-
-	if len(googRes.Results) == 0 {
-		return CityResponse{}, fmt.Errorf("no results found for: %s", search)
-	}
-	res := googRes.Results[0]
-	cityName := ""
-	for _, comp := range res.AddressComponents {
-		if contains(comp.Types, "locality") {
-			cityName = comp.LongName
-			break
+	if len(history) > 0 {
+		log.Printf("Found city in database: %s", history[0].City)
+		geo = &Geo{
+			City:      history[0].City,
+			Latitude:  history[0].Lat,
+			Longitude: history[0].Lon,
+			Timezone:  timezone,
 		}
+	} else {
+		log.Printf("No city found in database, searching for city: %s", search)
 	}
 
-	geo = &Geo{
-		City:      cityName,
-		Latitude:  res.Geometry.Location.Lat,
-		Longitude: res.Geometry.Location.Lng,
-		Timezone:  timezone,
+	if geo == nil {
+		resp, err := fetchData(fmt.Sprintf(
+			"https://maps.googleapis.com/maps/api/geocode/json?address=%s&components=short_name:CA|short_name:US&region=us&key=%s",
+			url.QueryEscape(search), os.Getenv("GOOGLE_API_KEY"),
+		))
+		if err != nil {
+			return CityResponse{}, fmt.Errorf("error fetching data from Google: %v", err)
+		}
+		defer resp.Body.Close()
+
+		var googRes struct {
+			Results []struct {
+				FormattedAddress  string `json:"formatted_address"`
+				AddressComponents []struct {
+					LongName string   `json:"long_name"`
+					Types    []string `json:"types"`
+				} `json:"address_components"`
+				Geometry struct {
+					Location struct {
+						Lat float64 `json:"lat"`
+						Lng float64 `json:"lng"`
+					} `json:"location"`
+				} `json:"geometry"`
+			} `json:"results"`
+		}
+		if err := json.NewDecoder(resp.Body).Decode(&googRes); err != nil {
+			return CityResponse{}, fmt.Errorf("error decoding JSON response: %v", err)
+		}
+
+		if len(googRes.Results) == 0 {
+			return CityResponse{}, fmt.Errorf("no results found for: %s", search)
+		}
+		res := googRes.Results[0]
+		cityName := ""
+		for _, comp := range res.AddressComponents {
+			if contains(comp.Types, "locality") {
+				cityName = comp.LongName
+				break
+			}
+		}
+
+		geo = &Geo{
+			City:      cityName,
+			Latitude:  res.Geometry.Location.Lat,
+			Longitude: res.Geometry.Location.Lng,
+			Timezone:  timezone,
+		}
+
+		// Save to database
+		_, err = db.Exec("INSERT INTO google_history (search, city, lat, lon) VALUES (?, ?, ?, ?)", search, geo.City, geo.Latitude, geo.Longitude)
+		if err != nil {
+			return CityResponse{}, fmt.Errorf("error saving city to database: %v", err)
+		} else {
+			log.Printf("Saved city to database: %s", geo.City)
+		}
 	}
 
 	sports, err := getCitySportsFromGeo(db, geo, locale)
@@ -592,7 +607,7 @@ func getCityBySearch(db *sql.DB, search string, timezone string, locale string) 
 	}
 
 	return CityResponse{
-		Name:     res.FormattedAddress,
+		Name:     geo.City,
 		Sports:   sports.Sports,
 		Timezone: timezone,
 	}, nil
