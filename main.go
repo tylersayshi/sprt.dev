@@ -136,6 +136,7 @@ func (s *Server) getIP(r *http.Request) string {
 	return ip
 }
 
+// TODO use this to format dates
 func (s *Server) getLocale(r *http.Request) string {
 	acceptLang := r.Header.Get("Accept-Language")
 	if acceptLang == "" {
@@ -294,7 +295,7 @@ type CityTeam struct {
 
 type CityResponse struct {
 	Name     string
-	Sports   map[Sport]*SportRow
+	Sports   map[Sport][]*SportRow
 	Timezone string
 }
 
@@ -380,25 +381,27 @@ WHERE sport = ?;
 		return 0
 	})
 
-	// limit to 5
-	if len(result) > 5 {
-		result = result[:5]
+	finalResult := []TeamWithDistance{}
+	for i := 0; i < 5; i++ {
+		if (result[i].Distance - result[0].Distance) < 25 {
+			finalResult = append(finalResult, result[i])
+		}
 	}
 
-	return result, nil
+	return finalResult, nil
 }
 
 func getCitySportsFromGeo(db *sql.DB, cityGeo *Geo) (CityResponse, error) {
 	if cityGeo == nil || cityGeo.City == "" {
 		return CityResponse{
 			Name:     "Default City",
-			Sports:   make(map[Sport]*SportRow),
+			Sports:   make(map[Sport][]*SportRow),
 			Timezone: "Unknown",
 		}, nil
 	}
 
 	name := fmt.Sprintf("%s, %s, %s", cityGeo.City, cityGeo.RegionCode, cityGeo.CountryCode)
-	sports := make(map[Sport]*SportRow)
+	sports := make(map[Sport][]*SportRow)
 
 	// Example sports iteration (using NBA/NFL as a stub)
 	sportTypes := []Sport{NBA, NFL, MLB, NHL}
@@ -409,18 +412,26 @@ func getCitySportsFromGeo(db *sql.DB, cityGeo *Geo) (CityResponse, error) {
 			continue
 		}
 
-		// Fetch ESPN schedule for the closest team
-		sportRow, err := getESPN(sport, closest[0].Abbr, closest[0].Name, cityGeo.Timezone, "en")
-		if err != nil {
-			log.Printf("Failed to fetch ESPN data for %s: %v", closest[0].Name, err)
-			// Handle the error or continue
-			continue
+		for _, team := range closest {
+			// Fetch ESPN schedule for the closest team
+			sportRow, err := getESPN(sport, team.Abbr, team.Name, cityGeo.Timezone, "en")
+			if err != nil {
+				log.Printf("Failed to fetch ESPN data for %s: %v", team.Name, err)
+				// Handle the error or continue
+				continue
+			}
+
+			// Only add if sportRow contains game data
+			if sportRow != nil {
+				if sports[sport] == nil {
+					sports[sport] = []*SportRow{sportRow}
+				} else {
+					sports[sport] = append(sports[sport], sportRow)
+				}
+			}
+
 		}
 
-		// Only add if sportRow contains game data
-		if sportRow != nil {
-			sports[sport] = sportRow
-		}
 	}
 
 	return CityResponse{
@@ -437,18 +448,20 @@ func getTextResponse(city CityResponse, isCurl bool) (string, error) {
 
 	var responses [][]string
 
-	for sport, sportRow := range city.Sports {
-		if sportRow != nil && len(sportRow.Games) > 0 {
-			line := []string{}
-			emoji := emojiMap[sport]
-			team := sportRow.Team
-			if isCurl {
-				line = append(line, fmt.Sprintf("%s %s", emoji, team))
-			} else {
-				line = append(line, sportRow.Team)
+	for sport, sportRows := range city.Sports {
+		for _, sportRow := range sportRows {
+			if sportRow != nil && len(sportRow.Games) > 0 {
+				line := []string{}
+				emoji := emojiMap[sport]
+				team := sportRow.Team
+				if isCurl {
+					line = append(line, fmt.Sprintf("%s %s", emoji, team))
+				} else {
+					line = append(line, sportRow.Team)
+				}
+				line = append(line, sportRow.Games...)
+				responses = append(responses, line)
 			}
-			line = append(line, sportRow.Games...)
-			responses = append(responses, line)
 		}
 	}
 
@@ -518,7 +531,7 @@ func getCityBySearch(db *sql.DB, search string, timezone string) (CityResponse, 
 	if len(history) > 0 {
 		return CityResponse{
 			Name:     history[0].Result,
-			Sports:   make(map[Sport]*SportRow),
+			Sports:   make(map[Sport][]*SportRow),
 			Timezone: timezone,
 		}, nil
 	}
