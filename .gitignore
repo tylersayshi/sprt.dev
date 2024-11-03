@@ -1,15 +1,29 @@
-node_modules
+cat > .gitignore << EOL
+# Binaries
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
 
-# build folder
-dist
+# Test binary, built with 'go test -c'
+*.test
 
-# environment variables
+# Output of the go coverage tool
+*.out
+
+# Dependency directories
+vendor/
+
+# Go workspace file
+go.work
+
+# IDE directories
+.idea/
+.vscode/
+
+# Environment files
 .env
+.env.local
 
-# yarn error logs
-*.log
-
-# temporary json files for testing
-tmp
-
-.DS_Store
+database.db
