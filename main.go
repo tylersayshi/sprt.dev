@@ -16,7 +16,7 @@ import (
 	"time"
 
 	"github.com/aquasecurity/table"
-	_ "github.com/mattn/go-sqlite3"
+	_ "modernc.org/sqlite"
 )
 
 // RateLimiter implements a simple rate limiting mechanism
@@ -93,7 +93,7 @@ type TeamWithDistance struct {
 
 // ConnectDatabase sets up a connection to the SQLite database.
 func ConnectDatabase(dbPath string) (*sql.DB, error) {
-	db, err := sql.Open("sqlite3", dbPath)
+	db, err := sql.Open("sqlite", dbPath)
 	if err != nil {
 		return nil, err
 	}
