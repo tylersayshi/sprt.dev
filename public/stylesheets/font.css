@@ -1,8 +1,0 @@
-@font-face {
- font-family: 'Source Code Pro';
- src: url('./SauceCodeProNerdFontMono-Medium.ttf') format('truetype');
-}
-
-body {
- font-family: 'SauceCodeProNerdFontMono', monospace;
-}

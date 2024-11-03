@@ -10,12 +10,13 @@ import (
 	"net/url"
 	"os"
 	"regexp"
+	"slices"
 	"strings"
 	"sync"
 	"time"
 
+	"github.com/aquasecurity/table"
 	_ "github.com/mattn/go-sqlite3"
-	"github.com/olekukonko/tablewriter"
 )
 
 // RateLimiter implements a simple rate limiting mechanism
@@ -77,6 +78,17 @@ type Team struct {
 	City  string
 }
 
+type TeamWithDistance struct {
+	ID       int
+	Sport    string
+	Lat      float64
+	Lon      float64
+	Name     string
+	Abbr     string
+	City     string
+	Distance float64
+}
+
 // ConnectDatabase sets up a connection to the SQLite database.
 func ConnectDatabase(dbPath string) (*sql.DB, error) {
 	db, err := sql.Open("sqlite3", dbPath)
@@ -112,7 +124,6 @@ func GetGoogleHistory(db *sql.DB, search string) ([]GoogleHistory, error) {
 	}
 	return history, nil
 }
-
 
 func (s *Server) getIP(r *http.Request) string {
 	ip := r.Header.Get("X-Forwarded-For")
@@ -209,9 +220,9 @@ func (s *Server) handleCity(db *sql.DB) http.HandlerFunc {
 		var city CityResponse
 		matched, _ := regexp.MatchString(`^[A-Za-z\s-_]+$`, parsedQuery)
 		if !matched {
-            // Note default city was removed
+			// Note default city was removed
 			http.Error(w, fmt.Sprintf("Invalid city: %s", parsedQuery), http.StatusBadRequest)
-            return
+			return
 		} else {
 			log.Printf("Search for city: %s", parsedQuery)
 			city, err = getCityBySearch(db, parsedQuery, cityGeo.Timezone)
@@ -248,8 +259,8 @@ func main() {
 		rateLimiter: NewRateLimiter(),
 	}
 
-    db, err := ConnectDatabase("database.db")
-    if err != nil {
+	db, err := ConnectDatabase("database.db")
+	if err != nil {
 		log.Fatalf("Failed to connect to database: %v", err)
 	}
 	defer db.Close()
@@ -273,14 +284,14 @@ func main() {
 		port = "3000"
 	}
 
-	log.Printf("🦊 Server is running at http://localhost:%s", port)
+	log.Printf("🥌 Server is running at http://localhost:%s", port)
 	log.Fatal(http.ListenAndServe(":"+port, nil))
 }
 
 // These types and functions would need to be implemented based on your actual utils
 type CityTeam struct {
-	Name     string
-	Abbr     string
+	Name string
+	Abbr string
 }
 
 type CityResponse struct {
@@ -289,12 +300,38 @@ type CityResponse struct {
 	Timezone string
 }
 
-func getClosest(db *sql.DB, loc Geo, sport Sport) ([]Team, error) {
+const EarthRadiusKm = 6371.0 // Radius of the Earth in kilometers
+
+// haversine calculates the distance between two points specified by latitude and longitude
+func haversine(lat1, lon1, lat2, lon2 float64) float64 {
+	// Convert latitude and longitude from degrees to radians
+	lat1Rad := lat1 * math.Pi / 180
+	lon1Rad := lon1 * math.Pi / 180
+	lat2Rad := lat2 * math.Pi / 180
+	lon2Rad := lon2 * math.Pi / 180
+
+	// Calculate the differences
+	dLat := lat2Rad - lat1Rad
+	dLon := lon2Rad - lon1Rad
+
+	// Apply the Haversine formula
+	a := math.Sin(dLat/2)*math.Sin(dLat/2) +
+		math.Cos(lat1Rad)*math.Cos(lat2Rad)*math.Sin(dLon/2)*math.Sin(dLon/2)
+	c := 2 * math.Atan2(math.Sqrt(a), math.Sqrt(1-a))
+
+	// Distance in kilometers
+	distance := EarthRadiusKm * c
+	return distance
+}
+
+func getClosest(db *sql.DB, loc Geo, sport Sport) ([]TeamWithDistance, error) {
 	query := `
 SELECT 
         abbr, 
         name, 
-        city
+        city,
+								lat,
+								lon
 FROM teams 
 WHERE sport = ?;
 	`
@@ -308,24 +345,46 @@ WHERE sport = ?;
 	teams := []Team{}
 	for rows.Next() {
 		var team Team
-		if err := rows.Scan(&team.Abbr, &team.Name, &team.City); err != nil {
+		if err := rows.Scan(&team.Abbr, &team.Name, &team.City, &team.Lat, &team.Lon); err != nil {
 			return nil, fmt.Errorf("failed to scan row: %v", err)
 		}
 		teams = append(teams, team)
 	}
 
 	if len(teams) == 0 {
-        log.Printf("No teams found for %s", sport)
+		log.Printf("No teams found for %s", sport)
 		return nil, nil
 	}
 
-	// Filter teams that are within a distance of 25 units
-	result := []Team{teams[0]}
-	for i := 1; i < len(teams) && len(result) < 5; i++ {
-        var dist = math.Sqrt(math.Pow(loc.Longitude - teams[i].Lon, 2) + math.Pow(loc.Latitude - teams[i].Lat, 2))
-        if dist < 25 {
-            result = append(result, teams[i])
-        }
+	result := []TeamWithDistance{}
+	for i := 0; i < len(teams); i++ {
+		var dist = haversine(loc.Latitude, loc.Longitude, teams[i].Lat, teams[i].Lon)
+
+		result = append(result, TeamWithDistance{
+			ID:       teams[i].ID,
+			Sport:    teams[i].Sport,
+			Lat:      teams[i].Lat,
+			Lon:      teams[i].Lon,
+			Name:     teams[i].Name,
+			Abbr:     teams[i].Abbr,
+			City:     teams[i].City,
+			Distance: dist,
+		})
+	}
+
+	// sort by distance
+	slices.SortFunc(result, func(a, b TeamWithDistance) int {
+		if a.Distance < b.Distance {
+			return -1
+		} else if a.Distance > b.Distance {
+			return 1
+		}
+		return 0
+	})
+
+	// limit to 5
+	if len(result) > 5 {
+		result = result[:5]
 	}
 
 	return result, nil
@@ -334,13 +393,13 @@ WHERE sport = ?;
 func getCitySportsFromGeo(db *sql.DB, cityGeo *Geo) (CityResponse, error) {
 	if cityGeo == nil || cityGeo.City == "" {
 		return CityResponse{
-			Name: "Default City",
-			Sports: make(map[Sport]*SportRow),
+			Name:     "Default City",
+			Sports:   make(map[Sport]*SportRow),
 			Timezone: "Unknown",
 		}, nil
 	}
 
-	name := fmt.Sprintf("%s, %s, %s", cityGeo.City, "RegionUnknown", "CountryUnknown")
+	name := fmt.Sprintf("%s, %s, %s", cityGeo.City, cityGeo.RegionCode, cityGeo.CountryCode)
 	sports := make(map[Sport]*SportRow)
 
 	// Example sports iteration (using NBA/NFL as a stub)
@@ -348,16 +407,22 @@ func getCitySportsFromGeo(db *sql.DB, cityGeo *Geo) (CityResponse, error) {
 
 	for _, sport := range sportTypes {
 		closest, err := getClosest(db, *cityGeo, sport)
-		if err != nil {
-			log.Printf("Error finding closest %s team: %v", sport, err)
-			// Optionally handle the error or continue
+		if err != nil || len(closest) == 0 {
 			continue
 		}
-		sports[sport] = &SportRow{
-            Name: sport,
-            Games: make([]string, len(closest)),
-            Team: closest[0].Name,
-        }
+
+		// Fetch ESPN schedule for the closest team
+		sportRow, err := getESPN(sport, closest[0].Abbr, closest[0].Name, cityGeo.Timezone, "en")
+		if err != nil {
+			log.Printf("Failed to fetch ESPN data for %s: %v", closest[0].Name, err)
+			// Handle the error or continue
+			continue
+		}
+
+		// Only add if sportRow contains game data
+		if sportRow != nil {
+			sports[sport] = sportRow
+		}
 	}
 
 	return CityResponse{
@@ -367,7 +432,7 @@ func getCitySportsFromGeo(db *sql.DB, cityGeo *Geo) (CityResponse, error) {
 	}, nil
 }
 
-func getTextResponse(city CityResponse, isCurl bool, locale string) (string, error) {
+func getTextResponse(city CityResponse, isCurl bool) (string, error) {
 	if len(city.Sports) == 0 {
 		return "Error: Could not get any sports for schedule table, try again later.", nil
 	}
@@ -394,10 +459,12 @@ func getTextResponse(city CityResponse, isCurl bool, locale string) (string, err
 	}
 
 	builder := &strings.Builder{}
-	table := tablewriter.NewWriter(builder)
-	table.SetHeader([]string{"Team", "Game 1", "Game 2", "Game 3"})
-	table.AppendBulk(responses)
-	table.Render()
+	t := table.New(builder)
+	t.SetHeaders("Team", "Game 1", "Game 2", "Game 3")
+	for _, response := range responses {
+		t.AddRow(response...)
+	}
+	t.Render()
 
 	response := fmt.Sprintf("Sport schedule: %s\n\n%s\nSee this project @tylerlaws0n/sprt.dev on Github for more information\n", city.Name, builder.String())
 
@@ -426,17 +493,15 @@ func responseView(text string, cityName string) string {
 <html lang="en">
 <head>
 	<title>Sports Schedule: %s</title>
-	<link rel="stylesheet" href="/public/stylesheets/style.css" />
-	<link rel="apple-touch-icon" sizes="76x76" href="/public/images/favicon/apple-touch-icon.png" />
-	<link rel="icon" type="image/png" sizes="32x32" href="/public/images/favicon/favicon-32x32.png" />
-	<link rel="icon" type="image/png" sizes="16x16" href="/public/images/favicon/favicon-16x16.png" />
-	<link rel="manifest" href="/public/images/favicon/site.webmanifest" />
-	<link rel="shortcut icon" href="/public/images/favicon/favicon.ico" />
-	<meta name="msapplication-TileColor" content="#da532c" />
-	<meta name="msapplication-config" content="/public/images/favicon/browserconfig.xml" />
-	<meta name="theme-color" content="#ffffff" />
 	<script async defer src="https://buttons.github.io/buttons.js"></script>
-	<link href="/public/stylesheets/font.css" rel="stylesheet" />
+	<style>
+	@media (prefers-color-scheme: dark) {
+		body {
+			background: #000;
+			color: #bbb;
+		}
+	}
+		</style>
 </head>
 <body>
 	<pre>%s</pre>
@@ -448,17 +513,17 @@ func responseView(text string, cityName string) string {
 }
 
 func getCityBySearch(db *sql.DB, search string, timezone string) (CityResponse, error) {
-    history, err := GetGoogleHistory(db, search)
-    if err != nil {
-        return CityResponse{}, fmt.Errorf("error getting google history: %v", err)
-    }
-    if len(history) > 0 {
-        return CityResponse{
-            Name: history[0].Result,
-            Sports: make(map[Sport]*SportRow),
-            Timezone: timezone,
-        }, nil
-    }
+	history, err := GetGoogleHistory(db, search)
+	if err != nil {
+		return CityResponse{}, fmt.Errorf("error getting google history: %v", err)
+	}
+	if len(history) > 0 {
+		return CityResponse{
+			Name:     history[0].Result,
+			Sports:   make(map[Sport]*SportRow),
+			Timezone: timezone,
+		}, nil
+	}
 
 	var geo *Geo
 	resp, err := fetchData(fmt.Sprintf(
@@ -492,7 +557,6 @@ func getCityBySearch(db *sql.DB, search string, timezone string) (CityResponse, 
 	if len(googRes.Results) == 0 {
 		return CityResponse{}, fmt.Errorf("no results found for: %s", search)
 	}
-
 	res := googRes.Results[0]
 	cityName := ""
 	for _, comp := range res.AddressComponents {
@@ -503,8 +567,8 @@ func getCityBySearch(db *sql.DB, search string, timezone string) (CityResponse, 
 	}
 
 	geo = &Geo{
-		City:     cityName,
-		Latitude: res.Geometry.Location.Lat,
+		City:      cityName,
+		Latitude:  res.Geometry.Location.Lat,
 		Longitude: res.Geometry.Location.Lng,
 		Timezone:  timezone,
 	}
@@ -593,7 +657,7 @@ type BroadcastMedia struct {
 
 // GeoIP types
 type GeoSearchResponse struct {
-	Status string    `json:"status"`
+	Status string   `json:"status"`
 	Data   *GeoData `json:"data"`
 }
 
@@ -602,10 +666,24 @@ type GeoData struct {
 }
 
 type Geo struct {
-	City      string  `json:"city"`
-	Latitude  float64 `json:"latitude"`
-	Longitude float64 `json:"longitude"`
-	Timezone  string  `json:"timezone"`
+	City          string  `json:"city"`
+	Latitude      float64 `json:"latitude"`
+	Longitude     float64 `json:"longitude"`
+	Timezone      string  `json:"timezone"`
+	Host          string  `json:"host"`
+	IP            string  `json:"ip"`
+	RDNS          string  `json:"rdns"`
+	ASN           int     `json:"asn"`
+	ISP           string  `json:"isp"`
+	CountryName   string  `json:"country_name"`
+	CountryCode   string  `json:"country_code"`
+	RegionName    string  `json:"region_name"`
+	RegionCode    string  `json:"region_code"`
+	PostalCode    string  `json:"postal_code"`
+	ContinentName string  `json:"continent_name"`
+	ContinentCode string  `json:"continent_code"`
+	MetroCode     int     `json:"metro_code"`
+	DateTime      string  `json:"datetime"`
 }
 
 // SportRow represents a row of sports data
@@ -798,7 +876,7 @@ func formatGameTime(timeStr, timezone, locale string) string {
 	now := time.Now()
 	timeStr = fmt.Sprintf("%d-%s-%s %s %s",
 		now.Year(), month, day, timeComponent, ampm)
-	
+
 	t, err := time.ParseInLocation("2006-1-2 3:04 PM", timeStr, sourceLocation)
 	if err != nil {
 		return timeStr
@@ -811,7 +889,7 @@ func formatGameTime(timeStr, timezone, locale string) string {
 	if strings.HasPrefix(locale, "en") {
 		return t.Format("1/2 - 3:04 PM MST")
 	}
-	
+
 	// For other locales, use day/month format
 	return t.Format("2/1 - 3:04 PM MST")
 }
