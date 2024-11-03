@@ -163,7 +163,6 @@ func (s *Server) handleRoot(db *sql.DB) http.HandlerFunc {
 
 		isCurl := s.isCurl(r)
 		ip := s.getIP(r)
-		locale := s.getLocale(r)
 
 		cityGeo, err := getIpCity(ip)
 		if err != nil {
@@ -177,7 +176,7 @@ func (s *Server) handleRoot(db *sql.DB) http.HandlerFunc {
 			return
 		}
 
-		textResponse, err := getTextResponse(city, isCurl, locale)
+		textResponse, err := getTextResponse(city, isCurl)
 		if err != nil {
 			http.Error(w, "Failed to generate response", http.StatusInternalServerError)
 			return
@@ -209,7 +208,6 @@ func (s *Server) handleCity(db *sql.DB) http.HandlerFunc {
 
 		isCurl := s.isCurl(r)
 		ip := s.getIP(r)
-		locale := s.getLocale(r)
 
 		cityGeo, err := getIpCity(ip)
 		if err != nil {
@@ -232,7 +230,7 @@ func (s *Server) handleCity(db *sql.DB) http.HandlerFunc {
 			}
 		}
 
-		textResponse, err := getTextResponse(city, isCurl, locale)
+		textResponse, err := getTextResponse(city, isCurl)
 		if err != nil {
 			http.Error(w, "Failed to generate response", http.StatusInternalServerError)
 			return
