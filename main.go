@@ -136,7 +136,6 @@ func (s *Server) getIP(r *http.Request) string {
 	return ip
 }
 
-// TODO use this to format dates
 func (s *Server) getLocale(r *http.Request) string {
 	acceptLang := r.Header.Get("Accept-Language")
 	if acceptLang == "" {
@@ -171,7 +170,9 @@ func (s *Server) handleRoot(db *sql.DB) http.HandlerFunc {
 			return
 		}
 
-		city, err := getCitySportsFromGeo(db, cityGeo)
+		locale := s.getLocale(r)
+
+		city, err := getCitySportsFromGeo(db, cityGeo, locale)
 		if err != nil {
 			http.Error(w, "Failed to get sports data", http.StatusInternalServerError)
 			return
@@ -209,6 +210,7 @@ func (s *Server) handleCity(db *sql.DB) http.HandlerFunc {
 
 		isCurl := s.isCurl(r)
 		ip := s.getIP(r)
+		locale := s.getLocale(r)
 
 		cityGeo, err := getIpCity(ip)
 		if err != nil {
@@ -224,7 +226,7 @@ func (s *Server) handleCity(db *sql.DB) http.HandlerFunc {
 			return
 		} else {
 			log.Printf("Search for city: %s", parsedQuery)
-			city, err = getCityBySearch(db, parsedQuery, cityGeo.Timezone)
+			city, err = getCityBySearch(db, parsedQuery, cityGeo.Timezone, locale)
 			if err != nil {
 				http.Error(w, "Failed to search city", http.StatusInternalServerError)
 				return
@@ -391,7 +393,7 @@ WHERE sport = ?;
 	return finalResult, nil
 }
 
-func getCitySportsFromGeo(db *sql.DB, cityGeo *Geo) (CityResponse, error) {
+func getCitySportsFromGeo(db *sql.DB, cityGeo *Geo, locale string) (CityResponse, error) {
 	if cityGeo == nil || cityGeo.City == "" {
 		return CityResponse{
 			Name:     "Default City",
@@ -414,7 +416,7 @@ func getCitySportsFromGeo(db *sql.DB, cityGeo *Geo) (CityResponse, error) {
 
 		for _, team := range closest {
 			// Fetch ESPN schedule for the closest team
-			sportRow, err := getESPN(sport, team.Abbr, team.Name, cityGeo.Timezone, "en")
+			sportRow, err := getESPN(sport, team.Abbr, team.Name, cityGeo.Timezone, locale)
 			if err != nil {
 				log.Printf("Failed to fetch ESPN data for %s: %v", team.Name, err)
 				// Handle the error or continue
@@ -523,7 +525,7 @@ func responseView(text string, cityName string) string {
 </html>`, cityName, text)
 }
 
-func getCityBySearch(db *sql.DB, search string, timezone string) (CityResponse, error) {
+func getCityBySearch(db *sql.DB, search string, timezone string, locale string) (CityResponse, error) {
 	history, err := GetGoogleHistory(db, search)
 	if err != nil {
 		return CityResponse{}, fmt.Errorf("error getting google history: %v", err)
@@ -584,7 +586,7 @@ func getCityBySearch(db *sql.DB, search string, timezone string) (CityResponse, 
 		Timezone:  timezone,
 	}
 
-	sports, err := getCitySportsFromGeo(db, geo)
+	sports, err := getCitySportsFromGeo(db, geo, locale)
 	if err != nil {
 		return CityResponse{}, fmt.Errorf("error getting city sports from geo: %v", err)
 	}
