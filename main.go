@@ -118,12 +118,14 @@ func (s *Server) handleRoot(db *sql.DB) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		isCurl := s.isCurl(r)
 		ip := s.getIP(r)
-		if ip != "" {
+		if ip != "" && !strings.Contains(ip, "::1") {
 			ip = strings.Split(ip, ":")[0]
 		}
+		insertRequestAsync(db, nil)
 
 		cityGeo, err := getIpCity(ip)
 		if err != nil {
+			log.Printf("Failed to get city: %v", err)
 			http.Error(w, "Failed to get city", http.StatusInternalServerError)
 			return
 		}
@@ -152,6 +154,15 @@ func (s *Server) handleRoot(db *sql.DB) http.HandlerFunc {
 	}
 }
 
+func insertRequestAsync(db *sql.DB, query *string) {
+	go func() {
+		_, err := db.Exec("INSERT INTO requests (search) VALUES (?)", query)
+		if err != nil {
+			log.Printf("Error inserting into requests: %v", err)
+		}
+	}()
+}
+
 func (s *Server) handleCity(db *sql.DB) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		query := strings.TrimPrefix(r.URL.Path, "/")
@@ -160,6 +171,8 @@ func (s *Server) handleCity(db *sql.DB) http.HandlerFunc {
 			http.Error(w, "Invalid query", http.StatusBadRequest)
 			return
 		}
+
+		insertRequestAsync(db, &parsedQuery)
 
 		isCurl := s.isCurl(r)
 		ip := s.getIP(r)
@@ -171,6 +184,7 @@ func (s *Server) handleCity(db *sql.DB) http.HandlerFunc {
 
 		cityGeo, err := getIpCity(ip)
 		if err != nil {
+			log.Printf("Failed to get city: %v", err)
 			http.Error(w, "Failed to get city", http.StatusInternalServerError)
 			return
 		}
@@ -702,7 +716,6 @@ func fetchData(url string, headers ...map[string]string) (*http.Response, error)
 
 func getIpCity(ip string) (*Geo, error) {
 	ipAddress := ip
-
 	if ipAddress == "127.0.0.1" || strings.Contains(ipAddress, "::1") || ipAddress == "" {
 		// Get public IP for local development
 		resp, err := fetchData("https://api64.ipify.org?format=json")
@@ -717,7 +730,6 @@ func getIpCity(ip string) (*Geo, error) {
 		if err := json.NewDecoder(resp.Body).Decode(&ipResponse); err != nil {
 			return nil, err
 		}
-
 		ipAddress = strings.Split(ipResponse.IP, ":")[0]
 	}
 
