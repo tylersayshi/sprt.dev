@@ -4,6 +4,7 @@ Description=sprt.dev
 [Service]
 Environment=DB_FILE=$DB_FILE
 Environment=GOOGLE_API_KEY=$GOOGLE_API_KEY
+Environment=PORT=7778
 ExecStart=/root/sprt-dev
 Restart=always
 
