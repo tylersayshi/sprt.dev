@@ -1,0 +1,8 @@
+[Unit]
+Description=Monitor /root/sprt-dev for changes and restart sprt-dev.service
+
+[Path]
+PathModified=/root/sprt-dev
+
+[Install]
+WantedBy=multi-user.target

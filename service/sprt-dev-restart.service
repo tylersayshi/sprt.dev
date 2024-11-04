@@ -1,0 +1,6 @@
+[Unit]
+Description=Restart sprt-dev.service on file change
+
+[Service]
+Type=oneshot
+ExecStart=/bin/systemctl restart sprt-dev.service

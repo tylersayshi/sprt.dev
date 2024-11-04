@@ -270,7 +270,6 @@ func main() {
 	}
 
 	dbFile := os.Getenv("DB_FILE")
-	fmt.Printf("DB_FILE from env: %s\n", dbFile)
 	if dbFile == "" {
 		dbFile = "sprt-dev.db"
 	}

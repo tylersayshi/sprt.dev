@@ -1,0 +1,11 @@
+[Unit]
+Description=sprt.dev
+
+[Service]
+Environment=DB_FILE=$DB_FILE
+Environment=GOOGLE_API_KEY=$GOOGLE_API_KEY
+ExecStart=/root/sprt-dev
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
