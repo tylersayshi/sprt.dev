@@ -72,4 +72,5 @@ I would like to build this application out to support more teams, sports, or gen
 
 1. [Install golang](https://go.dev/learn/)
 2. Add `GOOGLE_API_KEY` as environment variable for [google maps api](https://developers.google.com/maps/documentation/javascript/get-api-key)
-3. `go run .`
+3. `cp example.db sprt-dev.db`
+4. `go run .`

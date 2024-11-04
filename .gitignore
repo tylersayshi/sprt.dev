@@ -27,4 +27,5 @@ go.work
 .env.local
 
 *.db
+!example.db
 myapp
