@@ -1,7 +1,5 @@
 # sprt.dev :basketball: :baseball: :ice_hockey: :football:
 
-## NOTE: This is not being hosted. I am open to redeploying in the future, but for now I plan to leave this offline and work on other things.
-
 This project aims to provide you with the upcoming games near your location without ever needing to leave your terminal.
 
 ## Usage Instructions
@@ -11,8 +9,6 @@ Run
 ```
 curl https://sprt.dev
 ```
-
-[Or visit the site here](https://sprt.dev)
 
 If you would like to search for a city or place other than your current location simply search for the city like this request for boston. Anything you type after the `/` will be searched for a location to find teams near.
 
@@ -74,8 +70,6 @@ I would like to build this application out to support more teams, sports, or gen
 
 ## Dev Setup Instructions
 
-```
-npm i -g yarn # if you do not already have yarn
-yarn install
-yarn dev # see package.json for other scripts
-```
+1. [Install golang](https://go.dev/learn/)
+2. Add `GOOGLE_API_KEY` as environment variable for [google maps api](https://developers.google.com/maps/documentation/javascript/get-api-key)
+3. `go run .`
