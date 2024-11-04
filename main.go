@@ -492,7 +492,7 @@ func getTextResponse(city CityResponse, isCurl bool) (string, error) {
 	}
 	t.Render()
 
-	response := fmt.Sprintf("Sport schedule: %s\n\n%s\nSee this project @tylerlaws0n/sprt.dev on Github for more information\n", city.Name, builder.String())
+	response := fmt.Sprintf("Sport schedule: %s\n\n%s\nSee this project @tylersayshi/sprt.dev on Github for more information\n", city.Name, builder.String())
 
 	// Example of an HTTP request to track requests (similar to the TypeScript version)
 	go func() {
@@ -531,7 +531,7 @@ func responseView(text string, cityName string) string {
 </head>
 <body>
 	<pre>%s</pre>
-	<a class="github-button" href="https://github.com/tylerlaws0n/sprt.dev" data-color-scheme="no-preference: dark; light: light; dark: dark;" data-icon="octicon-star" data-show-count="true" aria-label="Star tylerlaws0n/sprt.dev on GitHub">
+	<a class="github-button" href="https://github.com/tylersayshi/sprt.dev" data-color-scheme="no-preference: dark; light: light; dark: dark;" data-icon="octicon-star" data-show-count="true" aria-label="Star tylersayshi/sprt.dev on GitHub">
 		Star
 	</a>
 </body>
