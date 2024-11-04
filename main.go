@@ -165,6 +165,9 @@ func (s *Server) handleRoot(db *sql.DB) http.HandlerFunc {
 
 		isCurl := s.isCurl(r)
 		ip := s.getIP(r)
+		if ip != "" {
+			ip = strings.Split(ip, ":")[0]
+		}
 
 		cityGeo, err := getIpCity(ip)
 		if err != nil {
@@ -214,6 +217,10 @@ func (s *Server) handleCity(db *sql.DB) http.HandlerFunc {
 		ip := s.getIP(r)
 		locale := s.getLocale(r)
 
+		if ip != "" {
+			ip = strings.Split(ip, ":")[0]
+		}
+
 		cityGeo, err := getIpCity(ip)
 		if err != nil {
 			http.Error(w, "Failed to get city", http.StatusInternalServerError)
@@ -262,7 +269,13 @@ func main() {
 		rateLimiter: NewRateLimiter(),
 	}
 
-	db, err := ConnectDatabase("sprt-dev.db")
+	dbFile := os.Getenv("DB_FILE")
+	fmt.Printf("DB_FILE from env: %s\n", dbFile)
+	if dbFile == "" {
+		dbFile = "sprt-dev.db"
+	}
+
+	db, err := ConnectDatabase(dbFile)
 	if err != nil {
 		log.Fatalf("Failed to connect to database: %v", err)
 	}
@@ -759,7 +772,8 @@ func getIpCity(ip string) (*Geo, error) {
 		if err := json.NewDecoder(resp.Body).Decode(&ipResponse); err != nil {
 			return nil, err
 		}
-		ipAddress = ipResponse.IP
+
+		ipAddress = strings.Split(ipResponse.IP, ":")[0]
 	}
 
 	// Get geo data
