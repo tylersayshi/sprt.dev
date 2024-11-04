@@ -178,7 +178,7 @@ func (s *Server) handleCity(db *sql.DB) http.HandlerFunc {
 		ip := s.getIP(r)
 		locale := s.getLocale(r)
 
-		if ip != "" {
+		if ip != "" && !strings.Contains(ip, "::1") {
 			ip = strings.Split(ip, ":")[0]
 		}
 
