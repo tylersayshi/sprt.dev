@@ -1,4 +1,4 @@
-# sprt.dev :basketball: :baseball: :ice_hockey: :football:
+# sprt.dev 🥌 ⚾ 🏀 🏈 🏒
 
 This project aims to provide you with the upcoming games near your location without ever needing to leave your terminal.
 
