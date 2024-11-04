@@ -12,55 +12,13 @@ import (
 	"regexp"
 	"slices"
 	"strings"
-	"sync"
 	"time"
 
 	"github.com/aquasecurity/table"
 	_ "modernc.org/sqlite"
 )
 
-// RateLimiter implements a simple rate limiting mechanism
-type RateLimiter struct {
-	requests map[string][]time.Time
-	mu       sync.Mutex
-}
-
-func NewRateLimiter() *RateLimiter {
-	return &RateLimiter{
-		requests: make(map[string][]time.Time),
-	}
-}
-
-func (rl *RateLimiter) IsAllowed(ip string) bool {
-	rl.mu.Lock()
-	defer rl.mu.Unlock()
-
-	now := time.Now()
-	hourAgo := now.Add(-time.Hour)
-
-	// Clean old requests
-	if times, exists := rl.requests[ip]; exists {
-		var valid []time.Time
-		for _, t := range times {
-			if t.After(hourAgo) {
-				valid = append(valid, t)
-			}
-		}
-		rl.requests[ip] = valid
-	}
-
-	// Check rate limit
-	if len(rl.requests[ip]) >= 50 {
-		return false
-	}
-
-	// Add new request
-	rl.requests[ip] = append(rl.requests[ip], now)
-	return true
-}
-
 type Server struct {
-	rateLimiter *RateLimiter
 }
 
 type GoogleHistory struct {
@@ -158,11 +116,6 @@ func (s *Server) isCurl(r *http.Request) bool {
 
 func (s *Server) handleRoot(db *sql.DB) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		if !s.rateLimiter.IsAllowed(s.getIP(r)) {
-			http.Error(w, "Easy big Fella - Too Many Requests", http.StatusTooManyRequests)
-			return
-		}
-
 		isCurl := s.isCurl(r)
 		ip := s.getIP(r)
 		if ip != "" {
@@ -201,11 +154,6 @@ func (s *Server) handleRoot(db *sql.DB) http.HandlerFunc {
 
 func (s *Server) handleCity(db *sql.DB) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		if !s.rateLimiter.IsAllowed(s.getIP(r)) {
-			http.Error(w, "Easy big Fella - Too Many Requests", http.StatusTooManyRequests)
-			return
-		}
-
 		query := strings.TrimPrefix(r.URL.Path, "/")
 		parsedQuery, err := url.QueryUnescape(query)
 		if err != nil {
@@ -265,9 +213,7 @@ func (s *Server) handleFavicon() http.HandlerFunc {
 }
 
 func main() {
-	server := &Server{
-		rateLimiter: NewRateLimiter(),
-	}
+	server := &Server{}
 
 	dbFile := os.Getenv("DB_FILE")
 	if dbFile == "" {
