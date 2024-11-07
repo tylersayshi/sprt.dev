@@ -451,7 +451,7 @@ func getTextResponse(city CityResponse, isCurl bool) (string, error) {
 	}
 	t.Render()
 
-	response := fmt.Sprintf("Sport schedule: %s\n\n%s\nSee this project @tylersayshi/sprt.dev on Github for more information\n", city.Name, builder.String())
+	response := fmt.Sprintf("Sport schedule: %s\n\n%s\nFor more info: https://github.com/tylersayshi/sprt.dev\n", city.Name, builder.String())
 
 	// Example of an HTTP request to track requests (similar to the TypeScript version)
 	go func() {
