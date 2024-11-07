@@ -12,7 +12,7 @@ curl sprt.dev
 
 If you would like to search for a city or place other than your current location simply search for the city like this request for boston. Anything you type after the `/` will be searched for a location to find teams near.
 
-![output for detroit sports schedule](/docs/default.png)
+![output for detroit sports schedule](/docs/detroit.png)
 
 ## Team Selection Strategy
 
