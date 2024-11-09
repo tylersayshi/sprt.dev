@@ -182,6 +182,7 @@ func (s *Server) handleCity(db *sql.DB) http.HandlerFunc {
 			ip = strings.Split(ip, ":")[0]
 		}
 
+		// used for timezone
 		cityGeo, err := getIpCity(ip)
 		if err != nil {
 			log.Printf("Failed to get city: %v", err)
@@ -549,13 +550,7 @@ func getCityBySearch(db *sql.DB, search string, timezone string, locale string) 
 			return CityResponse{}, fmt.Errorf("no results found for: %s", search)
 		}
 		res := googRes.Results[0]
-		cityName := ""
-		for _, comp := range res.AddressComponents {
-			if contains(comp.Types, "locality") {
-				cityName = comp.LongName
-				break
-			}
-		}
+		cityName := res.FormattedAddress
 
 		geo = &Geo{
 			City:      cityName,
@@ -730,7 +725,7 @@ func getIpCity(ip string) (*Geo, error) {
 		if err := json.NewDecoder(resp.Body).Decode(&ipResponse); err != nil {
 			return nil, err
 		}
-		ipAddress = strings.Split(ipResponse.IP, ":")[0]
+		ipAddress = ipResponse.IP
 	}
 
 	// Get geo data
