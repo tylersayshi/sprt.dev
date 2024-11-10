@@ -4,6 +4,12 @@ on:
   push:
     branches: [main]
 
+# TODO
+# - nginx reverse proxy
+# - cron job for backup
+# - move off droplet
+# - setup rdp client
+
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
@@ -66,6 +72,6 @@ jobs:
               -e GOOGLE_API_KEY='${{ secrets.GOOGLE_API_KEY }}' \
               -e AWS_ACCESS_KEY_ID='${{ secrets.AWS_ACCESS_KEY_ID }}' \
               -e AWS_SECRET_ACCESS_KEY='${{ secrets.AWS_SECRET_ACCESS_KEY }}' \
-              -e PORT=7772 \
-              -p 7772:7772 \
+              -e PORT=7778 \
+              -p 7778:7778 \
               ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest"
