@@ -53,10 +53,9 @@ jobs:
         run: |
           echo "$PRIVATE_KEY" > deploy_key
           chmod 600 deploy_key
-          export PATH=$PATH:/usr/local/bin
 
-          # SSH commands with expanded error handling and verbosity
           ssh -i deploy_key -o StrictHostKeyChecking=no -p $PORT $USER@$HOST "\
+            export PATH=$PATH:/usr/local/bin
             echo '${{ secrets.GITHUB_TOKEN }}' | docker login ghcr.io -u ${{ github.actor }} --password-stdin && \
             docker pull ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest && \
             docker stop sprt-dev || true && \
