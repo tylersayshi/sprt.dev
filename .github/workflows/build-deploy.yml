@@ -53,14 +53,15 @@ jobs:
         run: |
           echo "$PRIVATE_KEY" > deploy_key
           chmod 600 deploy_key
+          PATH=$PATH:/usr/local/bin
 
           # SSH commands with expanded error handling and verbosity
           ssh -i deploy_key -o StrictHostKeyChecking=no -p $PORT $USER@$HOST "\
-            echo '${{ secrets.GITHUB_TOKEN }}' | /usr/local/bin/docker login ghcr.io -u ${{ github.actor }} --password-stdin && \
-            /usr/local/bin/docker pull ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest && \
-            /usr/local/bin/docker stop sprt-dev || true && \
-            /usr/local/bin/docker rm sprt-dev || true && \
-            /usr/local/bin/docker run --platform linux/amd64 -d \
+            echo '${{ secrets.GITHUB_TOKEN }}' | docker login ghcr.io -u ${{ github.actor }} --password-stdin && \
+            docker pull ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest && \
+            docker stop sprt-dev || true && \
+            docker rm sprt-dev || true && \
+            docker run --platform linux/amd64 -d \
               --name sprt-dev \
               --restart unless-stopped \
               -e DB_FILE='${{ secrets.DB_FILE }}' \
