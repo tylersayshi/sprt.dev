@@ -55,9 +55,8 @@ jobs:
           chmod 600 deploy_key
 
           ssh -i deploy_key -o StrictHostKeyChecking=no -p $PORT $USER@$HOST "\
-            export PATH=$PATH:/usr/local/bin
-            echo '${{ secrets.GITHUB_TOKEN }}' | docker login ghcr.io -u ${{ github.actor }} --password-stdin && \
-            docker pull ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest@${{ github.sha }} && \
+            export PATH=$PATH:/usr/local/bin  
+            docker pull ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest && \
             docker stop sprt-dev || true && \
             docker rm sprt-dev || true && \
             docker run --platform linux/amd64 -d \
