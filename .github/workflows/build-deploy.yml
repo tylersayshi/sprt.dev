@@ -60,7 +60,7 @@ jobs:
             /usr/local/bin/docker pull ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest && \
             /usr/local/bin/docker stop sprt-dev || true && \
             /usr/local/bin/docker rm sprt-dev || true && \
-            /usr/local/bin/docker run -d \
+            /usr/local/bin/docker run --platform linux/amd64 -d \
               --name sprt-dev \
               -e DB_FILE='${{ secrets.DB_FILE }}' \
               -e GOOGLE_API_KEY='${{ secrets.GOOGLE_API_KEY }}' \
