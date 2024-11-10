@@ -21,4 +21,4 @@ COPY init.sh .
 
 # Start both the Go app and crond
 ENTRYPOINT ["/app/init.sh"]
-CMD ["crond", "-f", "&", "./main"]
+CMD ["./main"]
