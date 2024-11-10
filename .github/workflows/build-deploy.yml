@@ -49,7 +49,7 @@ jobs:
 
           # SSH commands with expanded error handling and verbosity
           ssh -i deploy_key -o StrictHostKeyChecking=no -p $PORT $USER@$HOST "\
-            echo '${{ secrets.CR_PAT }}' | /usr/local/bin/docker login ghcr.io -u ${{ github.actor }} --password-stdin && \
+            echo '${{ secrets.GITHUB_TOKEN }}' | /usr/local/bin/docker login ghcr.io -u ${{ github.actor }} --password-stdin && \
             /usr/local/bin/docker pull ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest && \
             /usr/local/bin/docker stop sprt-dev || true && \
             /usr/local/bin/docker rm sprt-dev || true && \
