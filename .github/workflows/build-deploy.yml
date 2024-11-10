@@ -38,22 +38,26 @@ jobs:
 
     steps:
       - name: Deploy to server
-        uses: appleboy/ssh-action@v1.1.0
-        with:
-          host: ${{ secrets.SERVER_HOST }}
-          username: ${{ secrets.SERVER_USER }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          port: ${{ secrets.SERVER_PORT }}
-          script: |
-            echo ${{ secrets.CR_PAT }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
-            docker pull ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
-            docker stop sprt-dev || true
-            docker rm sprt-dev || true
+        env:
+          PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          HOST: ${{ secrets.SERVER_HOST }}
+          USER: ${{ secrets.SERVER_USER }}
+          PORT: ${{ secrets.SERVER_PORT }}
+        run: |
+          echo "$PRIVATE_KEY" > deploy_key
+          chmod 600 deploy_key
+
+          # SSH commands with expanded error handling and verbosity
+          ssh -i deploy_key -o StrictHostKeyChecking=no -p $PORT $USER@$HOST "\
+            echo '${{ secrets.CR_PAT }}' | docker login ghcr.io -u ${{ github.actor }} --password-stdin && \
+            docker pull ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest && \
+            docker stop sprt-dev || true && \
+            docker rm sprt-dev || true && \
             docker run -d \
               --name sprt-dev \
-              -e DB_FILE=${{ secrets.DB_FILE }} \
-              -e GOOGLE_API_KEY=${{ secrets.GOOGLE_API_KEY }} \
-              -e AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }} \
-              -e AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }} \
+              -e DB_FILE='${{ secrets.DB_FILE }}' \
+              -e GOOGLE_API_KEY='${{ secrets.GOOGLE_API_KEY }}' \
+              -e AWS_ACCESS_KEY_ID='${{ secrets.AWS_ACCESS_KEY_ID }}' \
+              -e AWS_SECRET_ACCESS_KEY='${{ secrets.AWS_SECRET_ACCESS_KEY }}' \
               -p 8080:8080 \
-              ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
+              ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest"
