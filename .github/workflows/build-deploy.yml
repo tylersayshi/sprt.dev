@@ -53,7 +53,7 @@ jobs:
         run: |
           echo "$PRIVATE_KEY" > deploy_key
           chmod 600 deploy_key
-          PATH=$PATH:/usr/local/bin
+          export PATH=$PATH:/usr/local/bin
 
           # SSH commands with expanded error handling and verbosity
           ssh -i deploy_key -o StrictHostKeyChecking=no -p $PORT $USER@$HOST "\
