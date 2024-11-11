@@ -7,7 +7,7 @@ This project aims to provide you with the upcoming games near your location with
 Run
 
 ```
-curl sprt.dev
+curl https://sprt.dev
 ```
 
 If you would like to search for a city or place other than your current location simply search for the city like this request for boston. Anything you type after the `/` will be searched for a location to find teams near.
