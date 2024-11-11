@@ -446,7 +446,7 @@ func getTextResponse(city CityResponse, isCurl bool) (string, error) {
 
 	builder := &strings.Builder{}
 	t := table.New(builder)
-	t.SetHeaders("Team", "Game 1", "Game 2", "Game 3")
+	t.SetHeaders("Team", "Last Game", "Next Game", "Another Game")
 	for _, response := range responses {
 		t.AddRow(response...)
 	}
@@ -580,16 +580,6 @@ func getCityBySearch(db *sql.DB, search string, timezone string, locale string) 
 	}, nil
 }
 
-// Helper to check if a slice contains a string
-func contains(slice []string, item string) bool {
-	for _, s := range slice {
-		if s == item {
-			return true
-		}
-	}
-	return false
-}
-
 // Sport and League types
 type Sport string
 
@@ -619,8 +609,17 @@ type Event struct {
 }
 
 type Competition struct {
-	Status     Status      `json:"status"`
-	Broadcasts []Broadcast `json:"broadcasts"`
+	Status      Status       `json:"status"`
+	Broadcasts  []Broadcast  `json:"broadcasts"`
+	Competitors []Competitor `json:"competitors"`
+}
+
+type Competitor struct {
+	Score Score `json:"score"`
+}
+
+type Score struct {
+	DisplayValue string `json:"displayValue"`
 }
 
 type Status struct {
@@ -778,7 +777,9 @@ func getESPN(sport Sport, teamName, fullName, timezone, locale string) (*SportRo
 		}
 	}
 
-	if startIndex == -1 {
+	startIndex = startIndex - 1
+
+	if startIndex < 0 {
 		return nil, nil
 	}
 
@@ -804,11 +805,16 @@ func getESPN(sport Sport, teamName, fullName, timezone, locale string) (*SportRo
 
 		// Find broadcast
 		broadcast := "Local Network"
-		for _, broad := range competition.Broadcasts {
-			if strings.ToLower(broad.Type.ShortName) == "tv" {
-				if strings.ToLower(broad.Market.Type) == "national" {
-					broadcast = broad.Media.ShortName
-					break
+		if status == "Final" {
+			// assume home is index 0
+			broadcast = fmt.Sprintf("%s - %s", competition.Competitors[1].Score.DisplayValue, competition.Competitors[0].Score.DisplayValue)
+		} else {
+			for _, broad := range competition.Broadcasts {
+				if strings.ToLower(broad.Type.ShortName) == "tv" {
+					if strings.ToLower(broad.Market.Type) == "national" {
+						broadcast = broad.Media.ShortName
+						break
+					}
 				}
 			}
 		}
