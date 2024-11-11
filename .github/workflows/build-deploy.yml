@@ -66,6 +66,7 @@ jobs:
             docker stop sprt-dev || true && \
             docker rm sprt-dev || true && \
             docker run --platform linux/amd64 -d \
+              --network my-net \
               --name sprt-dev \
               --restart unless-stopped \
               -e DB_FILE='${{ secrets.DB_FILE }}' \
