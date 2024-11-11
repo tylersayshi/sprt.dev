@@ -9,14 +9,11 @@ WORKDIR /app
 COPY --from=builder /app/main .
 COPY backup.sh .
 
-# Create directory for SQLite DB
 RUN mkdir -p /app/data
 VOLUME /app/data
 
-# Add crontab
-# COPY crontab /etc/crontabs/root
-# Install crond
-# RUN apk add --no-cache dcron
+COPY crontab /etc/crontabs/root
+RUN apk add --no-cache dcron
 COPY init.sh .
 
 # Start both the Go app and crond
