@@ -55,12 +55,11 @@ jobs:
           PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
           HOST: ${{ secrets.SERVER_HOST }}
           USER: ${{ secrets.SERVER_USER }}
-          PORT: "22"
         run: |
           echo "$PRIVATE_KEY" > deploy_key
           chmod 400 deploy_key
 
-          ssh -i deploy_key -o StrictHostKeyChecking=no -p $PORT $USER@$HOST "\
+          ssh -i deploy_key -o StrictHostKeyChecking=no $USER@$HOST "\
             export PATH=$PATH:/usr/local/bin  
             docker pull ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest && \
             docker stop sprt-dev || true && \
