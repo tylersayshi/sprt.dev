@@ -58,7 +58,7 @@ jobs:
           PORT: "22"
         run: |
           echo "$PRIVATE_KEY" > deploy_key
-          chmod 600 deploy_key
+          chmod 400 deploy_key
 
           ssh -i deploy_key -o StrictHostKeyChecking=no -p $PORT $USER@$HOST "\
             export PATH=$PATH:/usr/local/bin  
