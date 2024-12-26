@@ -55,7 +55,7 @@ jobs:
           PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
           HOST: ${{ secrets.SERVER_HOST }}
           USER: ${{ secrets.SERVER_USER }}
-          PORT: "22"
+          PORT: "3000"
         run: |
           echo "$PRIVATE_KEY" > deploy_key
           chmod 400 deploy_key
