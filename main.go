@@ -660,24 +660,18 @@ type GeoData struct {
 }
 
 type Geo struct {
-	City          string  `json:"city"`
-	Latitude      float64 `json:"latitude"`
-	Longitude     float64 `json:"longitude"`
-	Timezone      string  `json:"timezone"`
-	Host          string  `json:"host"`
-	IP            string  `json:"ip"`
-	RDNS          string  `json:"rdns"`
-	ASN           int     `json:"asn"`
-	ISP           string  `json:"isp"`
-	CountryName   string  `json:"country_name"`
-	CountryCode   string  `json:"country_code"`
-	RegionName    string  `json:"region_name"`
-	RegionCode    string  `json:"region_code"`
-	PostalCode    string  `json:"postal_code"`
-	ContinentName string  `json:"continent_name"`
-	ContinentCode string  `json:"continent_code"`
-	MetroCode     int     `json:"metro_code"`
-	DateTime      string  `json:"datetime"`
+	City        string  `json:"city"`
+	Latitude    float64 `json:"latitude"`
+	Longitude   float64 `json:"longitude"`
+	Timezone    string  `json:"timezone"`
+	Host        string  `json:"host"`
+	IP          string  `json:"ip"`
+	CountryName string  `json:"country_name"`
+	CountryCode string  `json:"country_code"`
+	RegionName  string  `json:"region_name"`
+	RegionCode  string  `json:"region_code"`
+	PostalCode  string  `json:"postal_code"`
+	DateTime    string  `json:"datetime"`
 }
 
 // SportRow represents a row of sports data

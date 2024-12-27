@@ -3,13 +3,6 @@ name: Build and Deploy
 on:
   push:
     branches: [main]
-
-# TODO
-# - nginx reverse proxy
-# - cron job for backup
-# - move off droplet
-# - setup rdp client
-
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
@@ -44,34 +37,3 @@ jobs:
           platforms: linux/amd64,linux/arm64
           push: true
           tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
-
-  deploy:
-    needs: build-and-push
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Deploy to server
-        env:
-          PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-          HOST: ${{ secrets.SERVER_HOST }}
-          USER: ${{ secrets.SERVER_USER }}
-        run: |
-          echo "$PRIVATE_KEY" > deploy_key
-          chmod 400 deploy_key
-
-          ssh -i deploy_key -o StrictHostKeyChecking=no $USER@$HOST "\
-            export PATH=$PATH:/usr/local/bin  
-            docker pull ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest && \
-            docker stop sprt-dev || true && \
-            docker rm sprt-dev || true && \
-            docker run --platform linux/amd64 -d \
-              --network my-net \
-              --name sprt-dev \
-              --restart unless-stopped \
-              -e DB_FILE='${{ secrets.DB_FILE }}' \
-              -e GOOGLE_API_KEY='${{ secrets.GOOGLE_API_KEY }}' \
-              -e AWS_ACCESS_KEY_ID='${{ secrets.AWS_ACCESS_KEY_ID }}' \
-              -e AWS_SECRET_ACCESS_KEY='${{ secrets.AWS_SECRET_ACCESS_KEY }}' \
-              -e PORT=7778 \
-              -p 7778:7778 \
-              ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest"
