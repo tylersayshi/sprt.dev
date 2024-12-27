@@ -668,7 +668,6 @@ type Geo struct {
 	IP          string  `json:"ip"`
 	CountryName string  `json:"country_name"`
 	CountryCode string  `json:"country_code"`
-	RegionName  string  `json:"region_name"`
 	RegionCode  string  `json:"region_code"`
 	PostalCode  string  `json:"postal_code"`
 	DateTime    string  `json:"datetime"`
@@ -704,6 +703,7 @@ func fetchData(url string, headers ...map[string]string) (*http.Response, error)
 
 func getIpCity(ip string) (*Geo, error) {
 	ipAddress := ip
+	log.Printf("ip: %s", ipAddress)
 	if ipAddress == "127.0.0.1" || strings.Contains(ipAddress, "::1") || ipAddress == "" {
 		// Get public IP for local development
 		resp, err := fetchData("https://api64.ipify.org?format=json")
